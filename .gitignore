@@ -1,0 +1,29 @@
+# --- User media (too large for git; backup separately) ---
+/takes/*
+!/takes/.gitkeep
+
+# --- Render artifacts & intermediates ---
+/runs/**/*.mp4
+/runs/**/*.mov
+/runs/**/*.wav
+/runs/**/*.jpg
+/runs/**/comp/
+/runs/**/probe-trial/
+/runs/**/transcripts/
+/runs/**/transcripts-voice/
+
+# Keep small edit metadata if present (json/md) — not ignored
+
+# --- Python ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# --- OS / IDE ---
+.DS_Store
+Thumbs.db
+*.log
+
+# --- Whisper model (download via tools/download-whisper-model.ps1) ---
+*.bin

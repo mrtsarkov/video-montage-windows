@@ -1,0 +1,41 @@
+{
+  "passport": {
+    "run_label": "cursor",
+    "aspect": "16:9",
+    "fps": 25,
+    "subtitle_lead_sec": 0.1,
+    "picture_mode": "contrast",
+    "colors": {
+      "white": "#f4f4f5",
+      "accent1": "#f97316",
+      "accent2": "#38bdf8",
+      "dark_panel": "#18181b"
+    },
+    "fonts": {
+      "accent": "",
+      "text": ""
+    }
+  },
+  "correction": {
+    "black_point": 2,
+    "white_point": 242,
+    "midtone_max_darken_pct": 10
+  },
+  "encode": {
+    "codec": "libx264",
+    "bitrate": "30M",
+    "preset": "slow",
+    "tune": "grain",
+    "color_range": "tv",
+    "colorspace": "bt709"
+  },
+  "replacements": {
+    "ChatGPT": "ChatGPT",
+    "Claude": "Claude",
+    "FFmpeg": "FFmpeg",
+    "HyperFrames": "HyperFrames"
+  },
+  "segments": [],
+  "graphics": [],
+  "sfx": []
+}
