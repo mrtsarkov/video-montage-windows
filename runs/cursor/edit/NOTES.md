@@ -20,9 +20,7 @@ py -3 scripts\build_voice.py takes\2026-05-28` 13-20-36.mp4 runs\cursor\edit\edl
 # Подложка (~100 с)
 py -3 scripts\build_plate.py takes\2026-05-28` 13-20-36.mp4 runs\cursor\edit\edl.json runs\cursor\edit\plate.mp4
 
-# Субтитры + comp
-py -3 scripts\transcribe_take.py runs\cursor\edit\voice.wav runs\cursor\edit\transcripts-voice
-py -3 scripts\build_subtitles.py runs\cursor\edit\transcripts-voice\voice-words.json runs\cursor\edit\subtitles.json
+# Comp (субтитры отключены — build_subtitles.py не запускать)
 py -3 scripts\generate_comp.py
 
 # Графика (346 с, draft ~15–40 мин)

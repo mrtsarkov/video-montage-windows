@@ -3,7 +3,7 @@
     "run_label": "cursor",
     "aspect": "16:9",
     "fps": 25,
-    "subtitle_lead_sec": 0.1,
+    "subtitles": false,
     "picture_mode": "contrast",
     "colors": {
       "white": "#f4f4f5",

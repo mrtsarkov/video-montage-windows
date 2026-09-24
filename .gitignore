@@ -25,6 +25,7 @@ venv/
 Thumbs.db
 *.log
 ~$*
+*.locked
 
 # --- Whisper model (download via tools/download-whisper-model.ps1) ---
 *.bin

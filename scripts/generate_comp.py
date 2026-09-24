@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate HyperFrames composition from data.json + EDL + subtitles."""
+"""Generate HyperFrames composition from data.json + EDL (+ optional subtitles)."""
 from __future__ import annotations
 
 import json
@@ -24,8 +24,13 @@ def main() -> int:
     data = json.loads((edit / "data.json").read_text(encoding="utf-8"))
     edl = json.loads((edit / "edl.json").read_text(encoding="utf-8"))
     dur, tl = edl_timeline(edl)
+    subtitles_on = data.get("passport", {}).get("subtitles", False)
     subs_path = edit / "subtitles.json"
-    subs = json.loads(subs_path.read_text(encoding="utf-8")) if subs_path.exists() else []
+    subs = (
+        json.loads(subs_path.read_text(encoding="utf-8"))
+        if subtitles_on and subs_path.exists()
+        else []
+    )
 
     c = data["passport"]["colors"]
     comp_dir = edit / "comp"
@@ -78,6 +83,29 @@ def main() -> int:
     sub_html = ""
     for s in subs:
         sub_html += f'<div class="sub clip" data-start="{s["start"]:.3f}" data-duration="{max(0.24, s["end"]-s["start"]):.3f}">{s["text"]}</div>\n'
+
+    subs_css = (
+        """
+.subs { position:absolute; left:50%; bottom:7.5%; transform:translateX(-50%); width:88%; text-align:center; pointer-events:none; }
+.sub { position:absolute; left:0; right:0; bottom:0; opacity:0; font:500 38px/1.25 'Segoe UI',sans-serif; color:"""
+        + c["white"]
+        + """; text-shadow:0 2px 12px rgba(0,0,0,.85); }
+"""
+        if subtitles_on
+        else ""
+    )
+    subs_block = f'  <div class="subs">{sub_html}</div>\n' if subtitles_on else ""
+    subs_js = (
+        """
+document.querySelectorAll('.sub').forEach(el=>{
+  const s=parseFloat(el.dataset.start), d=parseFloat(el.dataset.duration);
+  tl.fromTo(el, { opacity:0, y:6 }, { opacity:1, y:0, duration:0.12, ease:p=>expo.out(p) }, Math.max(0,s-0.1));
+  tl.to(el, { opacity:0, duration:0.08, ease:p=>expo.in(p) }, s+d-0.08);
+});
+"""
+        if subtitles_on
+        else ""
+    )
 
     js_chk = "\n".join(
         f"  tl.fromTo('{sel}', {{ opacity:0, y:8 }}, {{ opacity:1, y:0, duration:0.35, ease:p=>expo.out(p) }}, {t_events + 0.4 + i * 0.5:.3f});\n"
@@ -139,9 +167,7 @@ html,body {{ margin:0; width:1920px; height:1080px; overflow:hidden; background:
 .stepper {{ display:flex; gap:12px; align-items:center; margin-top:10px; }}
 .step {{ width:36px; height:36px; border-radius:50%; border:2px solid #52525b; display:flex; align-items:center; justify-content:center; font:600 18px/1 'Segoe UI Bold',sans-serif; }}
 .step.on {{ border-color:{c['accent1']}; background:{c['accent1']}; color:#111; }}
-.subs {{ position:absolute; left:50%; bottom:7.5%; transform:translateX(-50%); width:88%; text-align:center; pointer-events:none; }}
-.sub {{ position:absolute; left:0; right:0; bottom:0; opacity:0; font:500 38px/1.25 'Segoe UI',sans-serif; color:{c['white']}; text-shadow:0 2px 12px rgba(0,0,0,.85); }}
-</style>
+{subs_css}</style>
 </head>
 <body>
 <div id="root" class="clip" data-composition-id="main" data-start="0" data-duration="{dur:.3f}" data-width="1920" data-height="1080">
@@ -187,8 +213,7 @@ html,body {{ margin:0; width:1920px; height:1080px; overflow:hidden; background:
     <div class="body" style="margin-top:12px;font-size:22px">Локальные → Внешние → Сводка</div>
   </div>
 
-  <div class="subs">{sub_html}</div>
-</div>
+{subs_block}</div>
 <script>
 const expo = {{ out: p => 1 - Math.pow(1 - p, 3), in: p => Math.pow(p, 3) }};
 const tl = gsap.timeline({{ paused: true }});
@@ -235,12 +260,7 @@ pop('#steps', {t_local:.3f});
 {js_steps}
 out('#steps', {t_local+9:.3f});
 
-document.querySelectorAll('.sub').forEach(el=>{{
-  const s=parseFloat(el.dataset.start), d=parseFloat(el.dataset.duration);
-  tl.fromTo(el, {{ opacity:0, y:6 }}, {{ opacity:1, y:0, duration:0.12, ease:p=>expo.out(p) }}, Math.max(0,s-0.1));
-  tl.to(el, {{ opacity:0, duration:0.08, ease:p=>expo.in(p) }}, s+d-0.08);
-}});
-
+{subs_js}
 window.__timelines = window.__timelines || {{}};
 window.__timelines['main'] = tl;
 tl.seek(0);

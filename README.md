@@ -32,7 +32,7 @@ cd video-montage-windows
    .\tools\init-run.ps1 -Label cursor
    ```
 
-5. Откройте папку проекта в Cursor и вставьте **весь** `MONTAGE-PROMPT-v4.md` как задачу агенту.
+5. Откройте папку проекта в Cursor и вставьте **весь** `MONTAGE-PROMPT-v4.md` + `PROJECT-CONFIG.md` как задачу агенту.
 
 6. Пробная сборка окружения (2 сек, §3.7):
 
@@ -50,10 +50,10 @@ logos/          — логотипы (опционально)
 script.txt      — текст ролика (опционально)
 refs/           — референсы стиля (опционально)
 runs/<метка>/
-  edit/         — пульт data.json, EDL, субтитры, планы
+  edit/         — пульт data.json, EDL, планы (субтитры выключены)
   out/          — final.mp4
 tools/          — PowerShell-раннеры
-scripts/        — Python (субтитры, sfx, замеры текста)
+scripts/        — Python (EDL, графика, sfx, замеры текста)
 ```
 
 ## Переменные окружения (монтаж)
@@ -82,7 +82,6 @@ HyperFrames / `whisper-cli` нужна модель **large-v3** (не `.en`):
 | Расшифровка одного дубля | `.\tools\transcribe.ps1 -Take takes\clip01.mp4` |
 | Список шрифтов Windows | `.\tools\list-fonts.ps1` |
 | Каталог sfx | `py -3.12 scripts\sfx_catalog.py sfx\` |
-| Атаки для субтитров | `py -3.12 scripts\subtitle_attacks.py runs\cursor\edit\voice.wav` |
 
 ## HyperFrames
 

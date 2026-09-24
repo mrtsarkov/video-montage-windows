@@ -3,7 +3,6 @@
     "run_label": "cursor",
     "aspect": "16:9",
     "fps": 30,
-    "subtitle_lead_sec": 0.1,
     "picture_mode": "contrast",
     "colors": {
       "white": "#f4f4f5",
@@ -14,7 +13,8 @@
     "fonts": {
       "accent": "Segoe UI Bold",
       "text": "Segoe UI"
-    }
+    },
+    "subtitles": false
   },
   "correction": {
     "black_point": 2,
