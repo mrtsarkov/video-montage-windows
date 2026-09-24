@@ -32,7 +32,7 @@ cd video-montage-windows
    .\tools\init-run.ps1 -Label cursor
    ```
 
-5. Откройте папку проекта в Cursor и вставьте **весь** `MONTAGE-PROMPT-v4-no-subs.md` (или `MONTAGE-PROMPT-v4.md` + `PROJECT-CONFIG.md`) как задачу агенту.
+5. Откройте папку проекта в Cursor и вставьте **весь** `MONTAGE-PROMPT-v4.md` (+ при желании `PROJECT-CONFIG.md`) как задачу агенту.
 
 6. Пробная сборка окружения (2 сек, §3.7):
 
