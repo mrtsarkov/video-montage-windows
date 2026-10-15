@@ -1,0 +1,47 @@
+{
+  "files": [
+    {
+      "file": "click-04.mp3",
+      "sha256_12": "075e17bdac5c",
+      "duration_s": 0.366,
+      "peak_at_s": 0.05,
+      "peak_dbfs": -19.47,
+      "attack_ms": 50.0,
+      "shape": "удар",
+      "type": "click",
+      "brightness_hz": 2926,
+      "sustain_ratio": 0.174,
+      "suits": "галочка, тик, шаг степпера, счётчик",
+      "use_gain_linear": 0.3
+    },
+    {
+      "file": "impact-word.mp3",
+      "sha256_12": "634d5eda5eb7",
+      "duration_s": 2.116,
+      "peak_at_s": 0.07,
+      "peak_dbfs": -0.31,
+      "attack_ms": 70.0,
+      "shape": "удар",
+      "type": "impact",
+      "brightness_hz": 55,
+      "sustain_ratio": 0.818,
+      "suits": "крупное событие: слово за головой, полноэкранная карточка",
+      "use_gain_linear": 0.3
+    },
+    {
+      "file": "pop-panel.mp3",
+      "sha256_12": "19ab7193f626",
+      "duration_s": 0.72,
+      "peak_at_s": 0.115,
+      "peak_dbfs": -8.77,
+      "attack_ms": 115.0,
+      "shape": "удар",
+      "type": "pop",
+      "brightness_hz": 705,
+      "sustain_ratio": 0.038,
+      "suits": "появление плашки, метки, пункта списка",
+      "use_gain_linear": 0.3
+    }
+  ],
+  "duplicates": []
+}

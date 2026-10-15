@@ -1,0 +1,72 @@
+{
+  "label": "v3",
+  "take": "D:\\LLM\\video-montage-template\\takes\\2026-05-28 13-20-36.mp4",
+  "stages": [
+    {
+      "stage": "env",
+      "status": "ok",
+      "seconds": 0.5
+    },
+    {
+      "stage": "edl",
+      "status": "skipped"
+    },
+    {
+      "stage": "voice",
+      "status": "skipped"
+    },
+    {
+      "stage": "comp",
+      "status": "skipped"
+    },
+    {
+      "stage": "check",
+      "status": "skipped"
+    },
+    {
+      "stage": "plate",
+      "status": "skipped"
+    },
+    {
+      "stage": "back_comp",
+      "status": "skipped"
+    },
+    {
+      "stage": "pick_window",
+      "status": "skipped"
+    },
+    {
+      "stage": "render",
+      "status": "skipped"
+    },
+    {
+      "stage": "render_back",
+      "status": "skipped"
+    },
+    {
+      "stage": "mask",
+      "status": "skipped"
+    },
+    {
+      "stage": "sfx",
+      "status": "skipped"
+    },
+    {
+      "stage": "final",
+      "status": "skipped"
+    },
+    {
+      "stage": "verify",
+      "status": "skipped"
+    },
+    {
+      "stage": "verify_extra",
+      "status": "skipped"
+    },
+    {
+      "stage": "report",
+      "status": "skipped"
+    }
+  ],
+  "total_seconds": 0.5
+}

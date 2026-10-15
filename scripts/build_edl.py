@@ -1,34 +1,29 @@
 #!/usr/bin/env python3
-"""Build EDL from word transcript: trim pauses, drop fillers, pick best path."""
+"""Build an EDL from a word transcript (spec §4).
+
+Draft pass: drop fillers and lone interjections, keep the best attempt of each
+repeated phrase (the later one wins), merge tiny fragments, trim the edges by a
+small pad. Cut points are only *guessed* here from word times - `snap_cuts.py`
+then moves every edge onto the speech envelope, because whisper timestamps drift
+by up to half a second on tails (spec §4).
+
+Usage:
+  build_edl.py <words.json> <edl.json> [--source NAME] [--pause 0.35]
+               [--min-words 3] [--pre 0.06] [--post 0.04]
+"""
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import sys
 from pathlib import Path
 
-FILLERS = {"э", "э-э", "ээ", "м", "мм", "ну", "как", "бы", "типа", "вот", "значит"}
+FILLERS = {"э", "э-э", "ээ", "м", "мм", "ну", "как", "бы", "типа", "вот", "значит", "эм"}
 DROP_PHRASES = [
     re.compile(r"^сразу покажу$", re.I),
     re.compile(r"^простоклашенной$", re.I),
 ]
-
-
-def load_words(path: Path) -> list[dict]:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def group_phrases(words: list[dict], pause: float = 0.35) -> list[list[dict]]:
-    phrases: list[list[dict]] = []
-    cur: list[dict] = []
-    for w in words:
-        if cur and w["start"] - cur[-1]["end"] > pause:
-            phrases.append(cur)
-            cur = []
-        cur.append(w)
-    if cur:
-        phrases.append(cur)
-    return phrases
 
 
 def phrase_text(p: list[dict]) -> str:
@@ -41,22 +36,30 @@ def normalize(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip()
 
 
+def group_phrases(words: list[dict], pause: float) -> list[list[dict]]:
+    phrases, cur = [], []
+    for w in words:
+        if cur and w["start"] - cur[-1]["end"] > pause:
+            phrases.append(cur)
+            cur = []
+        cur.append(w)
+    if cur:
+        phrases.append(cur)
+    return phrases
+
+
 def is_drop_phrase(p: list[dict]) -> bool:
     t = phrase_text(p)
     if not t or t.lower() in FILLERS:
         return True
-    for rx in DROP_PHRASES:
-        if rx.search(t):
-            return True
-    # lone filler words
-    toks = [w["word"].strip().lower().strip(",.!?") for w in p]
-    if all(t in FILLERS or t == "" for t in toks):
+    if any(rx.search(t) for rx in DROP_PHRASES):
         return True
-    return False
+    toks = [w["word"].strip().lower().strip(",.!?") for w in p]
+    return all(tok in FILLERS or tok == "" for tok in toks)
 
 
 def dedupe_phrases(phrases: list[list[dict]]) -> list[list[dict]]:
-    """Drop earlier duplicate normalized phrases, keep later."""
+    """Keep the later attempt of a repeated phrase (spec §4: on a tie take the later take)."""
     seen: dict[str, int] = {}
     out: list[list[dict]] = []
     for p in phrases:
@@ -65,7 +68,6 @@ def dedupe_phrases(phrases: list[list[dict]]) -> list[list[dict]]:
             out.append(p)
             continue
         if key in seen:
-            # replace earlier with this later attempt
             out[seen[key]] = p
         else:
             seen[key] = len(out)
@@ -73,47 +75,60 @@ def dedupe_phrases(phrases: list[list[dict]]) -> list[list[dict]]:
     return out
 
 
-def trim_phrase_edges(p: list[dict], pre_pad: float = 0.06, post_pad: float = 0.04) -> dict:
-    text = phrase_text(p)
-    start = max(0.0, p[0]["start"] - pre_pad)
-    end = p[-1]["end"] + post_pad
-    return {
-        "text": text,
-        "source": "2026-05-28 13-20-36.mp4",
-        "in": round(start, 3),
-        "out": round(end, 3),
-        "reason": "best single-take phrase after dedupe",
-    }
-
-
-def build(words: list[dict]) -> list[dict]:
-    phrases = group_phrases(words)
-    phrases = [p for p in phrases if not is_drop_phrase(p)]
-    phrases = dedupe_phrases(phrases)
-    # merge very short adjacent fragments (<3 words) with next if gap small
+def merge_short(phrases: list[list[dict]], min_words: int, gap: float = 0.25) -> list[list[dict]]:
     merged: list[list[dict]] = []
     i = 0
     while i < len(phrases):
         p = phrases[i]
-        if len(p) < 3 and i + 1 < len(phrases) and phrases[i + 1][0]["start"] - p[-1]["end"] < 0.25:
+        if len(p) < min_words and i + 1 < len(phrases) and phrases[i + 1][0]["start"] - p[-1]["end"] < gap:
             phrases[i + 1] = p + phrases[i + 1]
             i += 1
             continue
         merged.append(p)
         i += 1
-    return [trim_phrase_edges(p) for p in merged]
+    return merged
+
+
+def trim(p: list[dict], source: str, pre: float, post: float) -> dict:
+    return {
+        "text": phrase_text(p),
+        "source": source,
+        "in": round(max(0.0, p[0]["start"] - pre), 3),
+        "out": round(p[-1]["end"] + post, 3),
+        "reason": "draft from word timings; edges re-snapped to waveform",
+    }
+
+
+def build(words: list[dict], source: str, pause: float, min_words: int,
+          pre: float, post: float) -> list[dict]:
+    phrases = [p for p in group_phrases(words, pause) if not is_drop_phrase(p)]
+    phrases = dedupe_phrases(phrases)
+    phrases = merge_short(phrases, min_words)
+    return [trim(p, source, pre, post) for p in phrases]
 
 
 def main() -> int:
-    if len(sys.argv) < 3:
-        print("Usage: build_edl.py <words.json> <edl.json>", file=sys.stderr)
+    ap = argparse.ArgumentParser()
+    ap.add_argument("words")
+    ap.add_argument("out")
+    ap.add_argument("--source", default=None, help="source file name stored in the EDL")
+    ap.add_argument("--pause", type=float, default=0.35)
+    ap.add_argument("--min-words", type=int, default=3)
+    ap.add_argument("--pre", type=float, default=0.06)
+    ap.add_argument("--post", type=float, default=0.04)
+    args = ap.parse_args()
+
+    words_path = Path(args.words)
+    words = json.loads(words_path.read_text(encoding="utf-8-sig"))
+    if not words:
+        print("empty transcript", file=sys.stderr)
         return 1
-    words = load_words(Path(sys.argv[1]))
-    edl = build(words)
-    out = Path(sys.argv[2])
-    out.write_text(json.dumps(edl, ensure_ascii=False, indent=2), encoding="utf-8")
+    source = args.source or words_path.name.split("-words")[0]
+    edl = build(words, source, args.pause, args.min_words, args.pre, args.post)
+    Path(args.out).write_text(json.dumps(edl, ensure_ascii=False, indent=2), encoding="utf-8")
     dur = sum(c["out"] - c["in"] for c in edl)
-    print(f"EDL: {len(edl)} clips, {dur:.1f}s edited duration")
+    print(f"EDL: {len(edl)} clips from {len(words)} words, {dur:.1f}s (draft, edges not snapped yet)")
+    print(f"     written: {args.out}")
     return 0
 
 

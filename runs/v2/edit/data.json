@@ -1,0 +1,618 @@
+{
+  "passport": {
+    "run_label": "v2",
+    "aspect": "16:9",
+    "fps": 30,
+    "picture_mode": "contrast",
+    "colors": {
+      "white": "#f4f4f5",
+      "accent1": "#f97316",
+      "accent2": "#38bdf8",
+      "dark_panel": "#18181b"
+    },
+    "fonts": {
+      "accent": "Segoe UI Bold",
+      "text": "Segoe UI"
+    },
+    "subtitles": false
+  },
+  "correction": {
+    "black_point": 2,
+    "white_point": 242,
+    "midtone_max_darken_pct": 10
+  },
+  "encode": {
+    "codec": "libx264",
+    "bitrate": "30M",
+    "preset": "slow",
+    "tune": "grain",
+    "color_range": "tv",
+    "colorspace": "bt709"
+  },
+  "replacements": {
+    "ChatGPT": "ChatGPT",
+    "Claude": "Claude",
+    "FFmpeg": "FFmpeg",
+    "HyperFrames": "HyperFrames"
+  },
+  "segments": [
+    {
+      "text": "Господа, приветствую.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 1.13,
+      "out": 2.57,
+      "reason": "waveform onset/offset snap"
+    },
+    {
+      "text": "Продолжение нашего разговора.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 2.41,
+      "out": 2.79,
+      "reason": "waveform onset/offset snap (part 1/2)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 3.23,
+      "out": 5.04,
+      "reason": "continuation after pause trim (part 2/2)"
+    },
+    {
+      "text": "Я как в простоклашенной здесь и там вещаю, покажу вам, как это может выглядеть, то, о чем мы с вами говорим.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 5.75,
+      "out": 11.62,
+      "reason": "waveform onset/offset snap (part 1/2)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 11.82,
+      "out": 12.88,
+      "reason": "continuation after pause trim (part 2/2)"
+    },
+    {
+      "text": "сразу покажу а есть собственный сервис я для своей практики ежедневные использую все то что я вам сейчас покажу первое здесь он называется контент -завод но суть может быть тоже который мы говорили то есть едином фронте у нас дополнительно вкладочка в которой открывается ну что -то подобное подобный интерфейс календарь",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 14.59,
+      "out": 15.64,
+      "reason": "waveform onset/offset snap (part 1/4)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 15.93,
+      "out": 21.89,
+      "reason": "continuation after pause trim (part 2/4)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 22.33,
+      "out": 25.48,
+      "reason": "continuation after pause trim (part 3/4)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 25.9,
+      "out": 33.65,
+      "reason": "continuation after pause trim (part 4/4)"
+    },
+    {
+      "text": "а в нем в каждую дату заполнены уже заранее какие -то события. Как я говорил, это могут быть рыночные события, корпоративные события, внутренние, внешние, там у конкурентов какие -то выставки, форумы, то есть все то, что важно финансовому советнику. Он может заранее выбрать определенную категорию оповещений, которые его интересуют, ну, либо мы можем ограничить функционал какой -то обязательной воронкой, чтобы человек работал именно в этом ключе.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 34.19,
+      "out": 35.09,
+      "reason": "waveform onset/offset snap (part 1/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 35.41,
+      "out": 38.41,
+      "reason": "continuation after pause trim (part 2/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 38.76,
+      "out": 46.54,
+      "reason": "continuation after pause trim (part 3/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 46.91,
+      "out": 50.04,
+      "reason": "continuation after pause trim (part 4/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 50.33,
+      "out": 55.13,
+      "reason": "continuation after pause trim (part 5/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 55.39,
+      "out": 58.31,
+      "reason": "continuation after pause trim (part 6/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 58.65,
+      "out": 61.64,
+      "reason": "continuation after pause trim (part 7/7)"
+    },
+    {
+      "text": "тыкайте день у вас здесь отображается список этих мероприятий то есть финансовый советник с утра начинает свой день открывать этот календарь изучает что сегодня произойдет у кого произойдет тут же будет подгружаться естественно информация по текущим клиентам",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 62.05,
+      "out": 66.8,
+      "reason": "waveform onset/offset snap (part 1/3)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 67.2,
+      "out": 72.82,
+      "reason": "continuation after pause trim (part 2/3)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 73.29,
+      "out": 76.99,
+      "reason": "continuation after pause trim (part 3/3)"
+    },
+    {
+      "text": "Из его базы наверняка там тоже введу за полностью карточки.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 77.72,
+      "out": 81.68,
+      "reason": "waveform onset/offset snap"
+    },
+    {
+      "text": "Будут указаны какие -то ключевые события, дни рождения, рождение его детей, какие -то даты совершения по вкладам, почему -то еще. В общем, все это будет здесь указано.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 82.56,
+      "out": 91.76,
+      "reason": "waveform onset/offset snap"
+    },
+    {
+      "text": "Дальше, соответственно, если финансовый советник интересуется конкретным событием, он может на него нажать. В данном случае здесь указана генерация поста на эту тему. Но суть та же. Вы нажимаете, здесь дальше задаете определенные параметры, что вы хотите узнать об этом событии, и нажимаете «Сгенерировать сообщение». И вам вот уже конкретное сообщение на конкретную тему пишет.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 92.29,
+      "out": 101.57,
+      "reason": "waveform onset/offset snap (part 1/4)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 101.92,
+      "out": 107.39,
+      "reason": "continuation after pause trim (part 2/4)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 107.81,
+      "out": 110.31,
+      "reason": "continuation after pause trim (part 3/4)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 110.85,
+      "out": 115.44,
+      "reason": "continuation after pause trim (part 4/4)"
+    },
+    {
+      "text": "произойдет немножко магии он собирает информацию будет описывать это",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 116.64,
+      "out": 121.0,
+      "reason": "waveform onset/offset snap"
+    },
+    {
+      "text": "Соответственно, дальше финансовый советник уже, во -первых, погружен в контекст дня, он понимает, что будет происходить, зачем, почему, если какие -то конкретные события требуют подробностей, деталей, то он может сгенерировать себе подробную информацию, погрузиться в этот контекст.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 122.28,
+      "out": 124.84,
+      "reason": "waveform onset/offset snap (part 1/3)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 125.22,
+      "out": 129.11,
+      "reason": "continuation after pause trim (part 2/3)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 129.41,
+      "out": 137.29,
+      "reason": "continuation after pause trim (part 3/3)"
+    },
+    {
+      "text": "Далее сейчас мы с вами прочитаем этот пост.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 137.82,
+      "out": 140.14,
+      "reason": "waveform onset/offset snap"
+    },
+    {
+      "text": "И таким образом, вот видите.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 140.74,
+      "out": 143.16,
+      "reason": "waveform onset/offset snap"
+    },
+    {
+      "text": "Продолжение следует...",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 143.95,
+      "out": 144.49,
+      "reason": "waveform onset/offset snap"
+    },
+    {
+      "text": "написал уже пост на эту тему.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 145.03,
+      "out": 146.68,
+      "reason": "waveform onset/offset snap"
+    },
+    {
+      "text": "окошко маленькая но суть интерфейс повторюсь он может быть любым может быть реализован скорее всего в качестве дополнения там дополнительной вкладке в едином фронте чтобы было проще не плодить сущности но вот суть такова да далее мы читаем контекст этой новости что здесь важно на что обратить внимание почему как и так далее естественно все вот эти вот написания они регулируются фронтами то есть мы заранее сами создадим серию фронтов для разного типа типа сотрудников для разных ролей, и они смогут таким образом ориентироваться в этих событиях, вот как генерить эту информацию.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 147.29,
+      "out": 154.27,
+      "reason": "waveform onset/offset snap (part 1/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 154.58,
+      "out": 159.38,
+      "reason": "continuation after pause trim (part 2/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 159.86,
+      "out": 165.8,
+      "reason": "continuation after pause trim (part 3/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 166.14,
+      "out": 167.48,
+      "reason": "continuation after pause trim (part 4/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 167.99,
+      "out": 174.92,
+      "reason": "continuation after pause trim (part 5/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 175.41,
+      "out": 178.39,
+      "reason": "continuation after pause trim (part 6/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 178.66,
+      "out": 184.22,
+      "reason": "continuation after pause trim (part 7/7)"
+    },
+    {
+      "text": "Двур.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 185.36,
+      "out": 186.13,
+      "reason": "waveform onset/offset snap (part 1/2)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 186.42,
+      "out": 187.03,
+      "reason": "continuation after pause trim (part 2/2)"
+    },
+    {
+      "text": "дальше здесь но также можно сделать кнопки вот как я показывал на примере где там ну давайте покажем не складочки эффективности я использую для того чтобы смотреть личные параметры висеть фидбит приложение подгружается вся информация я заполняю там как прошел день мой пишу сюда она сохраняет у запись",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 187.65,
+      "out": 192.92,
+      "reason": "waveform onset/offset snap (part 1/4)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 193.15,
+      "out": 193.46,
+      "reason": "continuation after pause trim (part 2/4)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 193.68,
+      "out": 202.41,
+      "reason": "continuation after pause trim (part 3/4)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 202.7,
+      "out": 206.47,
+      "reason": "continuation after pause trim (part 4/4)"
+    },
+    {
+      "text": "дальше ввожу какие -то метрики, все это можно также трансформировать под...",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 207.01,
+      "out": 211.39,
+      "reason": "waveform onset/offset snap"
+    },
+    {
+      "text": "конкретную задачу например финансовый советник в конце дня или в начале дня сюда записывает там свои цели чтобы он хотел сделать какие параметры у него есть и нажимать сохранить запись дальше в конце дня он забивает тоже там сколько звонков встреч и их продаж проведено ну и так далее когда какую -то там оценку и дальше он проводит допустим так месяц эту всю метрику может смотреть руководитель может смотреть как это финансовый советник анализировать делать выгрузку да то есть мы можем проанализировать период он выдаст нам summary по конкретному периоду расскажет что почему что не так где были ошибки где усилится то есть таким образом мы ускоряем и работы финансов советника не руководителя",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 212.1,
+      "out": 216.2,
+      "reason": "waveform onset/offset snap (part 1/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 216.58,
+      "out": 221.54,
+      "reason": "continuation after pause trim (part 2/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 221.97,
+      "out": 229.84,
+      "reason": "continuation after pause trim (part 3/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 230.3,
+      "out": 234.63,
+      "reason": "continuation after pause trim (part 4/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 235.06,
+      "out": 244.3,
+      "reason": "continuation after pause trim (part 5/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 244.77,
+      "out": 247.48,
+      "reason": "continuation after pause trim (part 6/7)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 247.85,
+      "out": 253.36,
+      "reason": "continuation after pause trim (part 7/7)"
+    },
+    {
+      "text": "Вот, что еще могу показать? Ну, это уже скример по рыночным. Не знаю, наверное, это может быть реализовано. Здесь вот график у нас.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 256.26,
+      "out": 262.07,
+      "reason": "waveform onset/offset snap (part 1/2)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 262.29,
+      "out": 264.02,
+      "reason": "continuation after pause trim (part 2/2)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 266.11,
+      "out": 273.33,
+      "reason": "continuation after pause trim (part 2/5)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 273.71,
+      "out": 276.83,
+      "reason": "continuation after pause trim (part 3/5)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 277.19,
+      "out": 283.79,
+      "reason": "continuation after pause trim (part 4/5)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 284.23,
+      "out": 287.86,
+      "reason": "continuation after pause trim (part 5/5)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 289.94,
+      "out": 297.77,
+      "reason": "continuation after pause trim (part 2/4)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 298.27,
+      "out": 303.94,
+      "reason": "continuation after pause trim (part 3/4)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 304.44,
+      "out": 307.43,
+      "reason": "continuation after pause trim (part 4/4)"
+    },
+    {
+      "text": "Работа с внутренним продуктом, ну, допустим, какой -нибудь структурный продукт, который называется Владислав, соответственно, там дается оценка, какие акции входят, какие есть риски, зачем это нужно конкретному клиенту. Можно, допустим, будет включить сюда контекст, найти подходящий продукт под его клиентов, пятерых вот этих вот конкретных.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 308.23,
+      "out": 313.14,
+      "reason": "waveform onset/offset snap (part 1/6)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 313.64,
+      "out": 317.32,
+      "reason": "continuation after pause trim (part 2/6)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 317.74,
+      "out": 323.4,
+      "reason": "continuation after pause trim (part 3/6)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 323.67,
+      "out": 325.82,
+      "reason": "continuation after pause trim (part 4/6)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 326.18,
+      "out": 327.18,
+      "reason": "continuation after pause trim (part 5/6)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 327.67,
+      "out": 329.59,
+      "reason": "continuation after pause trim (part 6/6)"
+    },
+    {
+      "text": "Искусственный интеллект посмотрит базу, посмотрит, все оценит, дальше вот все расскажет, все покажет.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 329.98,
+      "out": 335.84,
+      "reason": "waveform onset/offset snap"
+    },
+    {
+      "text": "то зачем, почему, видите, подробно все описывает, при том, что действительно информация вся эта актуальна,",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 336.41,
+      "out": 341.35,
+      "reason": "waveform onset/offset snap"
+    },
+    {
+      "text": "и соответствует действительно.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 343.77,
+      "out": 345.51,
+      "reason": "waveform onset/offset snap"
+    },
+    {
+      "text": "Таким образом мы можем с вами реализовать.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 346.75,
+      "out": 349.35,
+      "reason": "waveform onset/offset snap"
+    },
+    {
+      "text": "Я сейчас показал пример. Понятно, что прообраз того, что мы сделаем, он будет другим, согласно правилам БКС и прочей логике, которая будет перед нами стоять. Но суть процесса такова. Мы можем сделать по сути все, что угодно.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 348.93,
+      "out": 364.15,
+      "reason": "waveform onset/offset snap"
+    },
+    {
+      "text": "локальными моделями, если у нас есть ограничения по безопасности. Для сбора внешней информации можно получать внешние модели,",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 365.34,
+      "out": 368.72,
+      "reason": "waveform onset/offset snap (part 1/2)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 369.14,
+      "out": 373.38,
+      "reason": "continuation after pause trim (part 2/2)"
+    },
+    {
+      "text": "чтобы упростить и ускорить процесс.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 372.95,
+      "out": 373.46,
+      "reason": "waveform onset/offset snap (part 1/2)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 373.64,
+      "out": 375.2,
+      "reason": "continuation after pause trim (part 2/2)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 375.56,
+      "out": 379.8,
+      "reason": "continuation after pause trim (part 2/3)"
+    },
+    {
+      "text": "",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 380.19,
+      "out": 382.06,
+      "reason": "continuation after pause trim (part 3/3)"
+    },
+    {
+      "text": "Благодарю за внимание.",
+      "source": "2026-05-28 13-20-36.mp4",
+      "in": 383.02,
+      "out": 384.08,
+      "reason": "waveform onset/offset snap"
+    }
+  ],
+  "graphics": [
+    "| 0.1 | hook | Контент-завод для советника | — |",
+    "| 10.7 | word | КОНТЕНТ-ЗАВОД | — |",
+    "| 10.7 | calendar | Календарь событий | — |",
+    "| 29.6 | checklist | Типы событий | — |",
+    "| 84.3 | chat | Генерация поста | — |",
+    "| 189.4 | counter | Метрики дня | — |",
+    "| 263.5 | scale | AI-анализ продукта | — |",
+    "| 330.2 | stepper | Локальные / внешние модели | — |"
+  ],
+  "sfx": []
+}

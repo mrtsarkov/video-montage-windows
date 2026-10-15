@@ -1,0 +1,55 @@
+{
+  "name": "Rudstock — Architectural Monolith",
+  "version": "2.0",
+  "status": "approved",
+  "sources": [
+    "/home/mrtsarkov/app/brand_book/Брендбук Rudstock.md (2026-04-07, v2.0, «Утверждено»)",
+    "/home/mrtsarkov/app/projects/t_brand_landing/BRAND_GUIDELINES.md (2026-04-06)"
+  ],
+  "superseded": "refs/brandbook/canonical.md — устаревшая концепция (Teal/Plum Noir/Playfair Display, 2026-04-03), несмотря на имя файла: не использовать",
+  "colors": {
+    "white": "#FFFFFF",
+    "surface": "#F3F3F3",
+    "surface_alt": "#F6F6F6",
+    "accent": "#EF3124",
+    "accent_dark": "#BC0004",
+    "ink": "#1A1C1C",
+    "ink_alt": "#111111",
+    "muted": "#666666"
+  },
+  "fonts": {
+    "family": "Inter",
+    "source": "Google Fonts (gwfh), latin+cyrillic+latin-ext",
+    "dir": "refs/brandbook/fonts",
+    "files": {
+      "400": "inter-v20-cyrillic_latin_latin-ext-regular.ttf",
+      "500": "inter-v20-cyrillic_latin_latin-ext-500.ttf",
+      "600": "inter-v20-cyrillic_latin_latin-ext-600.ttf",
+      "700": "inter-v20-cyrillic_latin_latin-ext-700.ttf",
+      "800": "inter-v20-cyrillic_latin_latin-ext-800.ttf",
+      "900": "inter-v20-cyrillic_latin_latin-ext-900.ttf"
+    },
+    "usage": {
+      "hook": 900,
+      "title": 800,
+      "body": 500,
+      "caption": 500
+    }
+  },
+  "shape": {
+    "radius_px": 32,
+    "border": "none",
+    "shadow": "0 20px 40px rgba(0,0,0,0.05)",
+    "video_shadow": "0 24px 48px rgba(0,0,0,0.18)",
+    "video_shadow_note": "бренд задаёт тень 5% для веба; на видео поверх светлой стены она невидима, поэтому плотность поднята до 18% — характер (мягкая тень без линий) сохранён"
+  },
+  "rules": [
+    "шрифт только Inter: без антиквы и рукописных",
+    "1px-обводки запрещены: границы только перепадом тона и мягкой тенью",
+    "акцент Alpha Red #EF3124 — кнопки, ключевые метрики, акценты",
+    "Bento: сверхкрупные скругления 32px",
+    "заголовки тяжёлые (700-900), tracking-tight, крупный кегль; наборный текст Inter Medium с просторным интерлиньяжем",
+    "Lower thirds: сплошная белая подложка, красный акцент, две строки, без блюра и стекла",
+    "минимум декора: приоритет данных и цифр"
+  ]
+}

@@ -1,0 +1,266 @@
+{
+  "file": "runs\\v2\\out\\final.mp4",
+  "edit": "runs\\v2\\edit",
+  "source": "takes\\2026-05-28 13-20-36.mp4",
+  "params": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30.0,
+    "lufs": -14.0,
+    "tp": -1.0,
+    "min_bitrate_mbps": 16.0
+  },
+  "checks": [
+    {
+      "check": "video",
+      "status": "PASS",
+      "measured": "h264 / yuv420p / 1920x1080 / 30.000 fps / duration 336.933 s",
+      "target": "h264 / yuv420p / 1920x1080 / 30 fps / duration = EDL sum +- 0.15 s",
+      "note": "",
+      "details": [
+        {
+          "check": "codec",
+          "status": "PASS",
+          "measured": "h264",
+          "target": "h264",
+          "note": ""
+        },
+        {
+          "check": "pix_fmt",
+          "status": "PASS",
+          "measured": "yuv420p",
+          "target": "yuv420p",
+          "note": ""
+        },
+        {
+          "check": "size",
+          "status": "PASS",
+          "measured": "1920x1080",
+          "target": "1920x1080",
+          "note": ""
+        },
+        {
+          "check": "fps",
+          "status": "PASS",
+          "measured": "30.000 fps (r_frame_rate 30/1)",
+          "target": "30 fps",
+          "note": ""
+        },
+        {
+          "check": "duration",
+          "status": "PASS",
+          "measured": "336.933 s vs EDL 336.910 s (81 segments, delta +0.023 s)",
+          "target": "EDL sum +- 0.15 s",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "check": "color_tags",
+      "status": "PASS",
+      "measured": "color_range=tv / color_space=bt709 / color_primaries=bt709 / color_trc=bt709",
+      "target": "tv / bt709 / bt709 / bt709 (all four tags mandatory)",
+      "note": "",
+      "details": [
+        {
+          "check": "color_range",
+          "status": "PASS",
+          "measured": "tv",
+          "target": "tv",
+          "note": ""
+        },
+        {
+          "check": "color_space",
+          "status": "PASS",
+          "measured": "bt709",
+          "target": "bt709",
+          "note": ""
+        },
+        {
+          "check": "color_primaries",
+          "status": "PASS",
+          "measured": "bt709",
+          "target": "bt709",
+          "note": ""
+        },
+        {
+          "check": "color_trc",
+          "status": "PASS",
+          "measured": "bt709",
+          "target": "bt709",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "check": "bitrate",
+      "status": "PASS",
+      "measured": "18.43 Mbps",
+      "target": ">= 16 Mbps (target ~30 Mbps)",
+      "note": "",
+      "details": [
+        {
+          "check": "video bitrate",
+          "status": "PASS",
+          "measured": "18.43 Mbps (ffprobe stream bit_rate)",
+          "target": ">= 16 Mbps",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "check": "audio",
+      "status": "PASS",
+      "measured": "aac / -14.20 LUFS / true peak -1.20 dBTP",
+      "target": "aac / -14 LUFS +- 0.5 LU / true peak <= -0.85 dBTP",
+      "note": "",
+      "details": [
+        {
+          "check": "stream",
+          "status": "PASS",
+          "measured": "aac (48000 Hz, 1 ch)",
+          "target": "aac",
+          "note": ""
+        },
+        {
+          "check": "loudness",
+          "status": "PASS",
+          "measured": "-14.20 LUFS",
+          "target": "-14 +- 0.5 LU (delta -0.20 LU)",
+          "note": ""
+        },
+        {
+          "check": "true_peak",
+          "status": "PASS",
+          "measured": "-1.20 dBTP",
+          "target": "<= -0.85 dBTP",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "check": "subtitles",
+      "status": "PASS",
+      "measured": "comp/index.html: 0x class=\"subs\", 0x class=\"sub clip\"; edit/subtitles.json: absent",
+      "target": "no class=\"subs\", no class=\"sub clip\", no edit/subtitles.json (spec sec. 5)",
+      "note": "info: edit/data.json has subtitles=None (spec sec. 5 expects false)",
+      "details": [
+        {
+          "check": "comp/index.html",
+          "status": "PASS",
+          "measured": "0x class=\"subs\", 0x class=\"sub clip\"",
+          "target": "no class=\"subs\" and no class=\"sub clip\"",
+          "note": ""
+        },
+        {
+          "check": "edit/subtitles.json",
+          "status": "PASS",
+          "measured": "absent",
+          "target": "absent",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "check": "layer_alpha",
+      "status": "PASS",
+      "measured": "empty 70/84 frames; visible 14/84 frames; min margins 4.79/4.79/13.98/62.31 %",
+      "target": ">= 1 empty frame (max alpha == 0); graphics present (max alpha > 0.12); opaque bbox >= 3.5% of width and >= 7% of height from the edges",
+      "note": "occlusion exemption (data-layout-allow-occlusion): elements #word.word-behind.clip; applied to 0/14 sampled frames",
+      "details": [
+        {
+          "check": "alpha_channel",
+          "status": "PASS",
+          "measured": "yuva444p12le",
+          "target": "pixel format with alpha (ProRes 4444, e.g. yuva444p12le)",
+          "note": ""
+        },
+        {
+          "check": "sampling",
+          "status": "PASS",
+          "measured": "84/84 frames decoded via ffmpeg alphaextract",
+          "target": ">= 12 frames evenly spaced over 336.933 s",
+          "note": "one sample every 4.0 s of layer time"
+        },
+        {
+          "check": "empty_frames",
+          "status": "PASS",
+          "measured": "70/84 frames with max(alpha) == 0",
+          "target": ">= 1 (alpha is 0 outside the graphics)",
+          "note": ""
+        },
+        {
+          "check": "graphics_present",
+          "status": "PASS",
+          "measured": "14/84 frames with max(alpha) > 0.12",
+          "target": ">= 1 frame with max(alpha) > 0.12",
+          "note": ""
+        },
+        {
+          "check": "frame_margins",
+          "status": "PASS",
+          "measured": "min margins L/R/T/B = 4.79/4.79/13.98/62.31 % of frame; 0 violating frames",
+          "target": ">= 3.5% of width, >= 7% of height",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "check": "black_frames",
+      "status": "PASS",
+      "measured": "first_frame mean luma 177.46/255; last_frame mean luma 180.58/255",
+      "target": "first and last frame mean luma > 8/255",
+      "note": "",
+      "details": [
+        {
+          "check": "first_frame",
+          "status": "PASS",
+          "measured": "mean luma 177.46/255",
+          "target": "> 8/255",
+          "note": ""
+        },
+        {
+          "check": "last_frame",
+          "status": "PASS",
+          "measured": "mean luma 180.58/255",
+          "target": "> 8/255",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "check": "source",
+      "status": "PASS",
+      "measured": "readable: takes\\2026-05-28 13-20-36.mp4; duration: source 384.900 s vs final 336.933 s; color_tags: source and final tags agree (or source tags are unset)",
+      "target": "readable; source duration >= final duration; colour tags consistent",
+      "note": "optional check requested with --source",
+      "details": [
+        {
+          "check": "readable",
+          "status": "PASS",
+          "measured": "takes\\2026-05-28 13-20-36.mp4",
+          "target": "readable",
+          "note": ""
+        },
+        {
+          "check": "duration",
+          "status": "PASS",
+          "measured": "source 384.900 s vs final 336.933 s",
+          "target": "source >= final - 0.15 s",
+          "note": ""
+        },
+        {
+          "check": "color_tags",
+          "status": "PASS",
+          "measured": "source and final tags agree (or source tags are unset)",
+          "target": "final tags match source",
+          "note": ""
+        }
+      ]
+    }
+  ],
+  "passed": 8,
+  "failed": 0,
+  "skipped": 0,
+  "verdict": "PASS"
+}

@@ -1,0 +1,8 @@
+{
+  "file": "person-mask.mov",
+  "window_start_s": 4.78,
+  "window_duration_s": 3.667,
+  "pix_fmt": "yuva444p12le",
+  "person_coverage_pct": 25.27,
+  "device": "cpu"
+}

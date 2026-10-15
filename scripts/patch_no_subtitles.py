@@ -54,7 +54,7 @@ def patch(c: str) -> str:
 
 
 if __name__ == "__main__":
-    text = patch(SRC.read_text(encoding="utf-8"))
+    text = patch(SRC.read_text(encoding="utf-8-sig"))
     OUT.write_text(text, encoding="utf-8")
     SRC.write_text(text, encoding="utf-8")
     print(f"Wrote {OUT} and {SRC}")

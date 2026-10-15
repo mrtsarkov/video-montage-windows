@@ -49,7 +49,7 @@ def main() -> int:
     if len(sys.argv) < 3:
         print("Usage: build_subtitles.py <voice-words.json> <subtitles.json>", file=sys.stderr)
         return 1
-    words = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+    words = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8-sig"))
     words = align_words(words, [])
     cues = group_cues(words)
     out = Path(sys.argv[2])

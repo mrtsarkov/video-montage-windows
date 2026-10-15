@@ -1,0 +1,48 @@
+{
+  "trigger_s": 10.96,
+  "chosen_s": 4.93,
+  "person_pct_at_trigger": 1.6921296296296295,
+  "person_pct_at_chosen": 25.27,
+  "candidates": [
+    {
+      "t": 0.5,
+      "person_pct": 24.25
+    },
+    {
+      "t": 4.93,
+      "person_pct": 25.27
+    },
+    {
+      "t": 9.37,
+      "person_pct": 24.25
+    },
+    {
+      "t": 10.96,
+      "person_pct": 1.69
+    },
+    {
+      "t": 13.8,
+      "person_pct": 1.05
+    },
+    {
+      "t": 18.23,
+      "person_pct": 1.94
+    },
+    {
+      "t": 22.66,
+      "person_pct": 1.84
+    },
+    {
+      "t": 27.09,
+      "person_pct": 1.89
+    },
+    {
+      "t": 31.53,
+      "person_pct": 1.72
+    },
+    {
+      "t": 35.96,
+      "person_pct": 1.78
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "checks": [
+    {
+      "check": "frame_sheet",
+      "status": "PASS",
+      "measured": "8/8 stills in frames/",
+      "target": "one still per graphics element, after it settled"
+    },
+    {
+      "check": "audio_sync",
+      "status": "PASS",
+      "measured": "lag +0.00 ms (correlation 1.0000)",
+      "target": "|lag| <= 5.0 ms"
+    },
+    {
+      "check": "levels",
+      "status": "PASS",
+      "measured": "paired on 27 EDL frames: source 0.98% -> final 0.98% clipped at 255 (grade adds +0.01 pp); p50 98-252; mean luma change 2.91/255",
+      "target": "grade adds <= 0.3 pp of clipping"
+    },
+    {
+      "check": "jitter",
+      "status": "PASS",
+      "measured": "max centroid drift 0.000 px/frame per element (4 element(s), )",
+      "target": "<= 0.25 px/frame on hold"
+    },
+    {
+      "check": "sfx_placement",
+      "status": "PASS",
+      "measured": "15/15 events raise the level (median +3.3 dB)",
+      "target": "each planned event louder than the voice-only track in its window",
+      "note": ""
+    },
+    {
+      "check": "determinism",
+      "status": "PASS",
+      "measured": "no infinite animation, no random/time source; 8 deterministic tl.call steps",
+      "target": "no infinite, Math.random, Date.now, performance.now"
+    }
+  ],
+  "passed": 6,
+  "failed": 0,
+  "skipped": 0,
+  "verdict": "PASS"
+}

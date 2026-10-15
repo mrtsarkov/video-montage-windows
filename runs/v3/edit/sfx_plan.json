@@ -1,0 +1,172 @@
+{
+  "source": "D:\\LLM\\video-montage-template\\sfx",
+  "target_peak_dbfs": -14.0,
+  "missing": [],
+  "events": [
+    {
+      "event_time_s": 0.1,
+      "element": "hook",
+      "file": "pop-panel.mp3",
+      "type": "pop",
+      "note": "появление элемента",
+      "peak_at_s": 0.115,
+      "start_s": 0.0,
+      "gain_db": -5.23,
+      "peak_dbfs": -8.77
+    },
+    {
+      "event_time_s": 11.0,
+      "element": "word",
+      "file": "impact-word.mp3",
+      "type": "impact",
+      "note": "появление элемента",
+      "peak_at_s": 0.07,
+      "start_s": 10.93,
+      "gain_db": -13.69,
+      "peak_dbfs": -0.31
+    },
+    {
+      "event_time_s": 11.0,
+      "element": "calendar",
+      "file": "pop-panel.mp3",
+      "type": "pop",
+      "note": "появление элемента",
+      "peak_at_s": 0.115,
+      "start_s": 10.885,
+      "gain_db": -5.23,
+      "peak_dbfs": -8.77
+    },
+    {
+      "event_time_s": 28.9,
+      "element": "checklist",
+      "file": "pop-panel.mp3",
+      "type": "pop",
+      "note": "появление элемента",
+      "peak_at_s": 0.115,
+      "start_s": 28.785,
+      "gain_db": -5.23,
+      "peak_dbfs": -8.77
+    },
+    {
+      "event_time_s": 29.27,
+      "element": "item",
+      "file": "click-04.mp3",
+      "type": "click",
+      "note": "пункт / шаг / счётчик",
+      "peak_at_s": 0.05,
+      "start_s": 29.22,
+      "gain_db": 5.47,
+      "peak_dbfs": -19.47
+    },
+    {
+      "event_time_s": 29.77,
+      "element": "item",
+      "file": "click-04.mp3",
+      "type": "click",
+      "note": "пункт / шаг / счётчик",
+      "peak_at_s": 0.05,
+      "start_s": 29.72,
+      "gain_db": 5.47,
+      "peak_dbfs": -19.47
+    },
+    {
+      "event_time_s": 30.27,
+      "element": "item",
+      "file": "click-04.mp3",
+      "type": "click",
+      "note": "пункт / шаг / счётчик",
+      "peak_at_s": 0.05,
+      "start_s": 30.22,
+      "gain_db": 5.47,
+      "peak_dbfs": -19.47
+    },
+    {
+      "event_time_s": 81.6,
+      "element": "chat",
+      "file": "pop-panel.mp3",
+      "type": "pop",
+      "note": "появление элемента",
+      "peak_at_s": 0.115,
+      "start_s": 81.485,
+      "gain_db": -5.23,
+      "peak_dbfs": -8.77
+    },
+    {
+      "event_time_s": 183.1,
+      "element": "counter",
+      "file": "click-04.mp3",
+      "type": "click",
+      "note": "появление элемента",
+      "peak_at_s": 0.05,
+      "start_s": 183.05,
+      "gain_db": 5.47,
+      "peak_dbfs": -19.47
+    },
+    {
+      "event_time_s": 183.37,
+      "element": "item",
+      "file": "click-04.mp3",
+      "type": "click",
+      "note": "пункт / шаг / счётчик",
+      "peak_at_s": 0.05,
+      "start_s": 183.32,
+      "gain_db": 5.47,
+      "peak_dbfs": -19.47
+    },
+    {
+      "event_time_s": 290.1,
+      "element": "scale",
+      "file": "pop-panel.mp3",
+      "type": "pop",
+      "note": "появление элемента",
+      "peak_at_s": 0.115,
+      "start_s": 289.985,
+      "gain_db": -5.23,
+      "peak_dbfs": -8.77
+    },
+    {
+      "event_time_s": 320.4,
+      "element": "stepper",
+      "file": "pop-panel.mp3",
+      "type": "pop",
+      "note": "появление элемента",
+      "peak_at_s": 0.115,
+      "start_s": 320.285,
+      "gain_db": -5.23,
+      "peak_dbfs": -8.77
+    },
+    {
+      "event_time_s": 320.95,
+      "element": "item",
+      "file": "click-04.mp3",
+      "type": "click",
+      "note": "пункт / шаг / счётчик",
+      "peak_at_s": 0.05,
+      "start_s": 320.9,
+      "gain_db": 5.47,
+      "peak_dbfs": -19.47
+    },
+    {
+      "event_time_s": 321.55,
+      "element": "item",
+      "file": "click-04.mp3",
+      "type": "click",
+      "note": "пункт / шаг / счётчик",
+      "peak_at_s": 0.05,
+      "start_s": 321.5,
+      "gain_db": 5.47,
+      "peak_dbfs": -19.47
+    },
+    {
+      "event_time_s": 322.15,
+      "element": "item",
+      "file": "click-04.mp3",
+      "type": "click",
+      "note": "пункт / шаг / счётчик",
+      "peak_at_s": 0.05,
+      "start_s": 322.1,
+      "gain_db": 5.47,
+      "peak_dbfs": -19.47
+    }
+  ]
+}
