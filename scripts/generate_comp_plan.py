@@ -1061,6 +1061,10 @@ def draw_outro(c: Comp, spec: dict, eid: str, at: float, dur: float) -> float:
                 f"{{ opacity:1, duration:0.42, ease:p=>expo.out(p) }}, {at:.3f});")
     c.js.append(f"reveal('#{eid}i', {at + 0.18:.3f});")
     c.stage_window(max(0.0, at - 0.25), at + dur + 0.4, "push", "left")
+    # the geometry change is crossfaded, and a crossfade between two framings
+    # shows a double image while it runs: blur the frame across that moment so the
+    # switch reads as a glass transition instead of two faces
+    c.stage_window(max(0.0, at - 0.55), at + 0.30, "glass")
     c.plan_row(at, spec.get("spoken", ""), "outro",
                "кадр сдвигается, панель подписки справа", "impact")
     return 0.6

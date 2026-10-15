@@ -67,6 +67,12 @@
       "person": "left"
     },
     {
+      "start": 495.76,
+      "end": 496.61,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
       "start": 496.06,
       "end": 505.93,
       "mode": "push",

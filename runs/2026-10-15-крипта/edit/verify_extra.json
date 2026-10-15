@@ -3,7 +3,7 @@
     {
       "check": "frame_sheet",
       "status": "PASS",
-      "measured": "37/37 stills in frames/",
+      "measured": "41/41 stills in frames/",
       "target": "one still per graphics element, after it settled"
     },
     {
@@ -15,9 +15,9 @@
     {
       "check": "levels",
       "status": "PASS",
-      "measured": "paired on 11 EDL frames: source 0.02% -> final 0.02% clipped at 255 (grade adds -0.01 pp); p50 185-189; mean luma change 6.75/255",
+      "measured": "paired on 9 EDL frames: source 0.02% -> final 0.01% clipped at 255 (grade adds -0.01 pp); p50 183-193; mean luma change 5.54/255",
       "target": "grade adds <= 0.3 pp of clipping",
-      "note": "21 frame(s) skipped: graphics on screen (§9.3 plates are white by design)"
+      "note": "22 frame(s) skipped: graphics on screen (§9.3 plates are white by design)"
     },
     {
       "check": "jitter",
@@ -28,7 +28,7 @@
     {
       "check": "sfx_placement",
       "status": "PASS",
-      "measured": "40/40 events raise the level (median +2.7 dB)",
+      "measured": "44/44 events raise the level (median +2.4 dB)",
       "target": "each planned event louder than the voice-only track in its window",
       "note": ""
     },
@@ -37,9 +37,27 @@
       "status": "PASS",
       "measured": "no infinite animation, no random/time source; 3 deterministic tl.call steps",
       "target": "no infinite, Math.random, Date.now, performance.now"
+    },
+    {
+      "check": "copy_quality",
+      "status": "PASS",
+      "measured": "218 text node(s), 0 with an ellipsis; 5 line(s) rewritten to fit; copy: 2026-10-15-крипта-inserts.json",
+      "target": "0 ellipses on screen; long lines are rewritten, not cut short"
+    },
+    {
+      "check": "retakes",
+      "status": "PASS",
+      "measured": "97 clips checked; 0 duplicate pair(s) left",
+      "target": "0 repeated or aborted phrases (build_edl.py + build_words_dtw.py remove them)"
+    },
+    {
+      "check": "face_safe",
+      "status": "PASS",
+      "measured": "face box x45% y28% 16×38%; 23 frame(s) measured, 1 exempt (liquid-glass stage); no graphics on the face",
+      "target": "0 frames with a graphic over the face outside the declared glass stage"
     }
   ],
-  "passed": 6,
+  "passed": 9,
   "failed": 0,
   "skipped": 0,
   "verdict": "PASS"

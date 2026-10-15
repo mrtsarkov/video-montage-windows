@@ -14,7 +14,7 @@
     {
       "check": "video",
       "status": "PASS",
-      "measured": "h264 / yuv420p / 1920x1080 / 30.000 fps / duration 509.267 s",
+      "measured": "h264 / yuv420p / 1920x1080 / 30.000 fps / duration 511.000 s",
       "target": "h264 / yuv420p / 1920x1080 / 30 fps / duration = EDL sum +- 0.15 s",
       "note": "",
       "details": [
@@ -49,8 +49,8 @@
         {
           "check": "duration",
           "status": "PASS",
-          "measured": "509.267 s vs EDL 509.260 s (96 segments, delta +0.007 s)",
-          "target": "EDL sum +- 0.15 s",
+          "measured": "511.000 s vs timeline.json total (footage 505.930 s + end card) 510.980 s (97 segments, delta +0.020 s)",
+          "target": "timeline sum +- 0.15 s",
           "note": ""
         }
       ]
@@ -95,14 +95,14 @@
     {
       "check": "bitrate",
       "status": "PASS",
-      "measured": "30.01 Mbps",
+      "measured": "29.99 Mbps",
       "target": ">= 16 Mbps (target ~30 Mbps)",
       "note": "",
       "details": [
         {
           "check": "video bitrate",
           "status": "PASS",
-          "measured": "30.01 Mbps (ffprobe stream bit_rate)",
+          "measured": "29.99 Mbps (ffprobe stream bit_rate)",
           "target": ">= 16 Mbps",
           "note": ""
         }
@@ -111,7 +111,7 @@
     {
       "check": "audio",
       "status": "PASS",
-      "measured": "aac / -14.20 LUFS / true peak -2.20 dBTP",
+      "measured": "aac / -14.30 LUFS / true peak -2.30 dBTP",
       "target": "aac / -14 LUFS +- 0.5 LU / true peak <= -0.85 dBTP",
       "note": "",
       "details": [
@@ -125,14 +125,14 @@
         {
           "check": "loudness",
           "status": "PASS",
-          "measured": "-14.20 LUFS",
-          "target": "-14 +- 0.5 LU (delta -0.20 LU)",
+          "measured": "-14.30 LUFS",
+          "target": "-14 +- 0.5 LU (delta -0.30 LU)",
           "note": ""
         },
         {
           "check": "true_peak",
           "status": "PASS",
-          "measured": "-2.20 dBTP",
+          "measured": "-2.30 dBTP",
           "target": "<= -0.85 dBTP",
           "note": ""
         }
@@ -164,9 +164,9 @@
     {
       "check": "layer_alpha",
       "status": "PASS",
-      "measured": "empty 52/120 frames; visible 68/120 frames; min margins 5.00/5.00/8.98/8.98 %",
+      "measured": "empty 42/120 frames; visible 78/120 frames; min margins 5.00/5.00/7.50/12.87 %",
       "target": ">= 1 empty frame (max alpha == 0); graphics present (max alpha > 0.12); opaque bbox >= 3.5% of width and >= 7% of height from the edges",
-      "note": "no data-layout-allow-occlusion element found in comp/index.html",
+      "note": "occlusion exemption (data-layout-allow-occlusion): elements #dv10.cover.clip, #dv11.cover.clip, #dv12.cover.clip, #dv2.cover.clip, #dv3.cover.clip, #dv4.cover.clip, #dv5.cover.clip, #dv6.cover.clip, #dv7.cover.clip, #dv8.cover.clip, #dv9.cover.clip, #e12_2.sheet.clip, #endcard.endplate.clip; applied to 10/78 sampled frames at t=44.71s, 87.30s, 219.30s, 261.89s, 342.80s, 381.12s, 423.70s, 500.35s | exemption is frame-level: other elements active at those timestamps are not attributed separately",
       "details": [
         {
           "check": "alpha_channel",
@@ -179,27 +179,27 @@
           "check": "sampling",
           "status": "PASS",
           "measured": "120/120 frames decoded via ffmpeg alphaextract",
-          "target": ">= 12 frames evenly spaced over 509.267 s",
-          "note": "one sample every 4.2 s of layer time"
+          "target": ">= 12 frames evenly spaced over 511.000 s",
+          "note": "one sample every 4.3 s of layer time"
         },
         {
           "check": "empty_frames",
           "status": "PASS",
-          "measured": "52/120 frames with max(alpha) == 0",
+          "measured": "42/120 frames with max(alpha) == 0",
           "target": ">= 1 (alpha is 0 outside the graphics)",
           "note": ""
         },
         {
           "check": "graphics_present",
           "status": "PASS",
-          "measured": "68/120 frames with max(alpha) > 0.12",
+          "measured": "78/120 frames with max(alpha) > 0.12",
           "target": ">= 1 frame with max(alpha) > 0.12",
           "note": ""
         },
         {
           "check": "frame_margins",
           "status": "PASS",
-          "measured": "min margins L/R/T/B = 5.00/5.00/8.98/8.98 % of frame; 0 violating frames",
+          "measured": "min margins L/R/T/B = 5.00/5.00/7.50/12.87 % of frame; 0 violating frames",
           "target": ">= 3.5% of width, >= 7% of height",
           "note": ""
         }
@@ -208,21 +208,21 @@
     {
       "check": "black_frames",
       "status": "PASS",
-      "measured": "first_frame mean luma 183.40/255; last_frame mean luma 176.44/255",
+      "measured": "first_frame mean luma 182.10/255; last_frame mean luma 29.58/255",
       "target": "first and last frame mean luma > 8/255",
       "note": "",
       "details": [
         {
           "check": "first_frame",
           "status": "PASS",
-          "measured": "mean luma 183.40/255",
+          "measured": "mean luma 182.10/255",
           "target": "> 8/255",
           "note": ""
         },
         {
           "check": "last_frame",
           "status": "PASS",
-          "measured": "mean luma 176.44/255",
+          "measured": "mean luma 29.58/255",
           "target": "> 8/255",
           "note": ""
         }
@@ -231,7 +231,7 @@
     {
       "check": "source",
       "status": "PASS",
-      "measured": "readable: D:\\LLM\\video-montage-template\\takes\\2026-10-15 13-54-01.mp4; duration: source 604.133 s vs final 509.267 s; color_tags: source and final tags agree (or source tags are unset)",
+      "measured": "readable: D:\\LLM\\video-montage-template\\takes\\2026-10-15 13-54-01.mp4; duration: source 604.133 s vs final 511.000 s; color_tags: source and final tags agree (or source tags are unset)",
       "target": "readable; source duration >= final duration; colour tags consistent",
       "note": "optional check requested with --source",
       "details": [
@@ -245,7 +245,7 @@
         {
           "check": "duration",
           "status": "PASS",
-          "measured": "source 604.133 s vs final 509.267 s",
+          "measured": "source 604.133 s vs final 511.000 s",
           "target": "source >= final - 0.15 s",
           "note": ""
         },

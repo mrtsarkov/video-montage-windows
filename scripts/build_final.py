@@ -177,6 +177,32 @@ def stage_graph(chains: list[str], label: str, stage: dict,
     return tail
 
 
+def master_limit(edit: Path | None, layers: list[Path]) -> float | None:
+    """How long the composed master may be: exactly the graphics layer.
+
+    Without this cap the graph ran to the *source* duration (604.1 s on this take)
+    instead of the layer's 511.0 s, so the lossless master carried a 93 s frozen
+    tail - invisible after `-t` in the deliverable, but ~4 minutes of wasted
+    encoding and 800 MB of disk per run.
+    """
+    if edit is not None:
+        tl = edit / "timeline.json"
+        if tl.is_file():
+            try:
+                got = float(json.loads(tl.read_text(encoding="utf-8-sig")).get("layer_s") or 0)
+                if got > 0:
+                    return got
+            except (json.JSONDecodeError, TypeError, ValueError):
+                pass
+    dur = []
+    for layer in layers:
+        try:
+            dur.append(probe_duration(layer))
+        except Exception:
+            continue
+    return max(dur) if dur else None
+
+
 def build_master(src: Path, edl: list[dict], layers: list[Path], corr: dict,
                  out: Path, matrix_fix: bool, edit: Path | None = None) -> None:
     """Compose the plate with the graphics layers.
@@ -211,12 +237,16 @@ def build_master(src: Path, edl: list[dict], layers: list[Path], corr: dict,
         inputs.append((str(layer), []))
     stage = load_stage(edit) if edit else {"windows": []}
     has_push = any(w.get("mode") == "push" for w in (stage.get("windows") or []))
+    limit = master_limit(edit, layers)
     feather_idx = None
     if has_push and edit is not None:
         try:
             feather = ensure_feather(edit, push_geometry())
             feather_idx = len(inputs)
-            inputs.append((str(feather), ["-loop", "1"]))
+            # the mask is a looped still: bound it, so no infinite pad can hold the
+            # graph open past the layer
+            extra = ["-loop", "1"] + (["-t", f"{limit:.3f}"] if limit else [])
+            inputs.append((str(feather), extra))
         except subprocess.CalledProcessError as exc:
             print(f"      ! feather mask failed, push keeps a hard edge: {exc}",
                   file=sys.stderr)
@@ -281,12 +311,19 @@ def build_master(src: Path, edl: list[dict], layers: list[Path], corr: dict,
     cmd = ["ffmpeg", "-y", "-v", "error"]
     for path, extra in inputs:
         cmd += extra + ["-i", path]
-    cmd += ["-filter_complex", graph, "-map", "[vout]", "-an",
-            "-c:v", "libx264", "-qp", "0", "-preset", "veryfast",
+    cmd += ["-filter_complex", graph, "-map", "[vout]", "-an"]
+    if limit:
+        cmd += ["-t", f"{limit:.3f}"]
+    # write to a side name and swap on success: an interrupted build must never
+    # leave a half-written master that the pipeline would treat as up to date.
+    # The temp name keeps the real extension - ffmpeg picks the muxer from it.
+    part = out.with_name(out.stem + ".part" + out.suffix)
+    cmd += ["-c:v", "libx264", "-qp", "0", "-preset", "veryfast",
             "-pix_fmt", "yuv420p", "-color_range", "tv",
             "-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709",
-            str(out)]
+            str(part)]
     run(cmd)
+    part.replace(out)
 
 
 def mix_sfx(edit: Path, voice: Path, out: Path) -> dict:
@@ -399,10 +436,12 @@ def encode_final(master: Path, voice: Path, out: Path, bitrate: str, two_pass: b
         pass_args = ["-pass", "2", "-passlogfile", str(passlog)]
     else:
         pass_args = []
+    part = out.with_name(out.stem + ".part" + out.suffix)
     run(["ffmpeg", "-y", "-v", "error", "-i", str(master), "-i", str(voice),
          "-map", "0:v", "-map", "1:a", "-af", "apad", *common, *pass_args,
          "-c:a", "aac", "-b:a", "192k", "-t", f"{duration:.3f}",
-         "-movflags", "+faststart", str(out)])
+         "-movflags", "+faststart", str(part)])
+    part.replace(out)
 
 
 def main() -> int:

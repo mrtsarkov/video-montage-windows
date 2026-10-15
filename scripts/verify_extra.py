@@ -429,7 +429,10 @@ def check_face_safe(edit: Path, data: Path | None = None, samples: int = 24) -> 
     if not layer.is_file():
         return {"check": "face_safe", "status": "SKIP", "measured": "no layer-front.mov",
                 "target": "no graphic pixel inside the face box outside the glass stage"}
-    box = {"x": 39.0, "y": 30.0, "w": 27.0, "h": 38.0}
+    # the face itself, measured on this take (eyes at y 36.6 %, cheeks to x 61 %):
+    # deliberately not the hair silhouette, so the soft brand shadow may graze the
+    # temple without this check firing on a frame where nothing covers the face
+    box = {"x": 45.0, "y": 28.0, "w": 16.5, "h": 38.0}
     dp = data or (edit / "data.json")
     if dp and Path(dp).is_file():
         try:

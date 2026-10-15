@@ -6,7 +6,7 @@
     {
       "stage": "env",
       "status": "ok",
-      "seconds": 0.6
+      "seconds": 0.8
     },
     {
       "stage": "edl",
@@ -38,20 +38,24 @@
     },
     {
       "stage": "final",
-      "status": "skipped"
+      "status": "ok",
+      "seconds": 839.7
     },
     {
       "stage": "verify",
-      "status": "skipped"
+      "status": "ok",
+      "seconds": 16.4
     },
     {
       "stage": "verify_extra",
-      "status": "skipped"
+      "status": "ok",
+      "seconds": 34.2
     },
     {
       "stage": "report",
-      "status": "skipped"
+      "status": "ok",
+      "seconds": 0.1
     }
   ],
-  "total_seconds": 0.6
+  "total_seconds": 891.2
 }
