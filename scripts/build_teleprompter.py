@@ -88,6 +88,9 @@ def build_html(blocks: list[dict], title: str, speed: int, size: int, mirror: bo
   .num {{ color:var(--red); font-weight:800; font-size:calc({size}px * .62); }}
   .ttl {{ font-weight:800; font-size:calc({size}px * .58); letter-spacing:-.02em; }}
   .dur {{ margin-left:auto; color:var(--muted); font-weight:800; font-size:calc({size}px * .42); }}
+  #top {{ position:fixed; top:0; left:0; right:0; z-index:5; display:flex; align-items:center; gap:14px;
+    padding:14px 28px; background:var(--red); color:#fff; font-weight:800; font-size:24px; }}
+  #top .meta {{ margin-left:auto; font-weight:500; font-size:20px; opacity:.9; }}
   .say {{ font-size:{size}px; line-height:1.5; font-weight:800; margin:0; }}
   .note {{ margin-top:1.6vh; color:#9a9a9a; font-size:calc({size}px * .42); line-height:1.35; }}
   #cue {{ position:fixed; top:0; left:0; right:0; height:5px; background:var(--red); width:0%; }}
@@ -96,12 +99,14 @@ def build_html(blocks: list[dict], title: str, speed: int, size: int, mirror: bo
 </style></head>
 <body{' class="mirror"' if mirror else ''}>
 <div id="cue"></div>
+<div id="top"><span>● REC</span><span>{html.escape(title)}</span>
+  <span class="meta">пробел — пауза · ↑ ↓ — скорость</span></div>
 <div id="wrap"><div id="roll">{''.join(parts)}</div></div>
-<div id="hint">пробел — пауза · ↑ ↓ — скорость</div>
 <script>
   const roll = document.getElementById('roll'), cue = document.getElementById('cue');
   const total = roll.scrollHeight + innerHeight;
-  let y = innerHeight, speed = {speed}, paused = false, last = performance.now(), wait = 2.5;
+  let y = innerHeight * 0.80, speed = {speed}, paused = false, last = performance.now(), wait = 1.2;
+  roll.style.transform = `translateY(${{y}}px)`;
   document.addEventListener('keydown', e => {{
     if (e.code === 'Space') {{ paused = !paused; e.preventDefault(); }}
     if (e.code === 'ArrowUp')   speed = Math.min(300, speed + 4);
