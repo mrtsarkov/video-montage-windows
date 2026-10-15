@@ -48,6 +48,9 @@ def main() -> int:
              "dark_panel": bc["surface"], "surface": bc["surface"], "ink": bc["ink"],
              "muted": bc["muted"]}
     shadow = brand["shape"]["video_shadow"] if brand else "0 10px 22px rgba(0,0,0,.35)"
+    author = data["passport"].get("author") or {"name": "Дмитрий Царьков",
+                                                "role": "управляющий активами"}
+    lt_in, lt_hold = 0.6, 6.0
     brand_fonts = brand["fonts"]["files"] if brand else {}
     comp_dir = edit / "comp"
     fonts_dir = comp_dir / "fonts"
@@ -292,6 +295,12 @@ html,body {{ margin:0; width:1920px; height:1080px; overflow:hidden; background:
     font:900 92px/1 'Inter',sans-serif; color:{c['accent1']}; letter-spacing:-.03em;
     text-shadow:0 6px 24px rgba(0,0,0,.18); opacity:0;
   }}
+  .lower-third {{
+    position:absolute; left:5%; bottom:7.5%; padding:18px 26px 18px 22px; opacity:0;
+    border-left:6px solid {c['accent1']};
+  }}
+  .lower-third .lt-name {{ font:800 40px/1.15 'Inter',sans-serif; color:{c['ink']}; letter-spacing:-.02em; }}
+  .lower-third .lt-role {{ font:500 26px/1.3 'Inter',sans-serif; color:{c['muted']}; margin-top:4px; }}
   .word-behind {{
     position:absolute; left:50%; top:34%; transform:translate(-50%,-50%) scale(.84);
     font:900 118px/1 'Inter',sans-serif; color:{c['accent1']}; letter-spacing:-.04em;
@@ -325,6 +334,11 @@ html,body {{ margin:0; width:1920px; height:1080px; overflow:hidden; background:
 <div id="root" class="clip" data-composition-id="main" data-start="0" data-duration="{dur:.3f}" data-width="1920" data-height="1080">
 
   <h1 id="hook" class="hook clip" data-start="{t_hook:.3f}" data-duration="{d_hook:.3f}">Контент-завод</h1>
+
+  <div id="lt" class="panel lower-third clip" data-start="{lt_in:.3f}" data-duration="{min(lt_hold, max(1.0, dur - lt_in - 0.5)):.3f}">
+    <div class="lt-name">{author["name"]}</div>
+    <div class="lt-role">{author["role"]}</div>
+  </div>
 
   <div id="cal" class="panel card-right clip" data-start="{t_cal:.3f}" data-duration="{d_cal:.3f}">
     <div class="title">Календарь</div><div class="line" id="cal-line"></div>
@@ -377,6 +391,8 @@ function out(el, t, d=0.3) {{
 }}
 
 pop('#hook', {t_hook:.3f}); out('#hook', {o_hook:.3f});
+tl.fromTo('#lt', {{ opacity:0, x:-48 }}, {{ opacity:1, x:0, duration:0.5, ease:p=>expo.out(p) }}, {lt_in:.3f});
+out('#lt', {lt_in + min(lt_hold, max(1.0, dur - lt_in - 0.5)) - 0.45:.3f});
 pop('#cal', {t_cal:.3f});
 tl.fromTo('#cal-line', {{ width:0 }}, {{ width:'100%', duration:0.35, ease:p=>expo.out(p) }}, {t_cal+0.2:.3f});
 const calMsg = '28 мая · 4 события · клиенты';

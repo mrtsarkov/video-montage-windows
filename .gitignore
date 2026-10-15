@@ -43,3 +43,8 @@ Thumbs.db
 
 # --- Whisper model (download via tools/download-whisper-model.ps1) ---
 *.bin
+
+# --- Script texts: private working material, only the README is tracked ---
+/script/*
+!/script/.gitkeep
+!/script/README.md
