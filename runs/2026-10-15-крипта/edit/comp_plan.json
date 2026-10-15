@@ -1,0 +1,232 @@
+{
+  "label": "Доля акций Cerebras",
+  "duration_s": 509.26,
+  "blocks": 12,
+  "elements": 48,
+  "inserts": [
+    {
+      "block": 1,
+      "kind": "chips",
+      "id": "e1_1",
+      "at": 14.0,
+      "dur": 10.0,
+      "side": "l",
+      "anchored": true
+    },
+    {
+      "block": 1,
+      "kind": "quotes",
+      "id": "e1_2",
+      "at": 27.04,
+      "dur": 12.0,
+      "side": "r",
+      "anchored": true
+    },
+    {
+      "block": 2,
+      "kind": "chips",
+      "id": "e2_1",
+      "at": 44.93,
+      "dur": 11.0,
+      "side": "r",
+      "anchored": true
+    },
+    {
+      "block": 2,
+      "kind": "chips",
+      "id": "e2_2",
+      "at": 75.64,
+      "dur": 11.0,
+      "side": "l",
+      "anchored": true
+    },
+    {
+      "block": 3,
+      "kind": "diagram",
+      "id": "e3_1",
+      "at": 92.54,
+      "dur": 13.0,
+      "side": "r",
+      "anchored": true
+    },
+    {
+      "block": 3,
+      "kind": "quote",
+      "id": "e3_2",
+      "at": 106.24,
+      "dur": 10.0,
+      "side": "l",
+      "anchored": false
+    },
+    {
+      "block": 4,
+      "kind": "timeline",
+      "id": "e4_1",
+      "at": 129.48,
+      "dur": 12.0,
+      "side": "r",
+      "anchored": true
+    },
+    {
+      "block": 4,
+      "kind": "chips",
+      "id": "e4_2",
+      "at": 143.15,
+      "dur": 10.0,
+      "side": "l",
+      "anchored": true
+    },
+    {
+      "block": 5,
+      "kind": "stat",
+      "id": "e5_1",
+      "at": 176.38,
+      "dur": 11.0,
+      "side": "r",
+      "anchored": true
+    },
+    {
+      "block": 5,
+      "kind": "chart",
+      "id": "e5_2",
+      "at": 202.38,
+      "dur": 9.83,
+      "side": "l",
+      "anchored": true
+    },
+    {
+      "block": 6,
+      "kind": "premium",
+      "id": "e6_1",
+      "at": 223.47,
+      "dur": 12.0,
+      "side": "r",
+      "anchored": true
+    },
+    {
+      "block": 6,
+      "kind": "chips",
+      "id": "e6_2",
+      "at": 250.31,
+      "dur": 6.0,
+      "side": "l",
+      "anchored": true
+    },
+    {
+      "block": 7,
+      "kind": "table",
+      "id": "e7_1",
+      "at": 267.08,
+      "dur": 12.0,
+      "side": "r",
+      "anchored": true
+    },
+    {
+      "block": 7,
+      "kind": "counter",
+      "id": "e7_2",
+      "at": 288.63,
+      "dur": 7.34,
+      "side": "l",
+      "anchored": true
+    },
+    {
+      "block": 8,
+      "kind": "scenario",
+      "id": "e8_1",
+      "at": 303.56,
+      "dur": 12.0,
+      "side": "r",
+      "anchored": true
+    },
+    {
+      "block": 8,
+      "kind": "quote",
+      "id": "e8_2",
+      "at": 331.38,
+      "dur": 6.0,
+      "side": "l",
+      "anchored": true
+    },
+    {
+      "block": 9,
+      "kind": "scenario",
+      "id": "e9_1",
+      "at": 342.65,
+      "dur": 11.0,
+      "side": "l",
+      "anchored": true
+    },
+    {
+      "block": 9,
+      "kind": "funnel",
+      "id": "e9_2",
+      "at": 354.35,
+      "dur": 11.0,
+      "side": "r",
+      "anchored": true
+    },
+    {
+      "block": 10,
+      "kind": "checklist",
+      "id": "e10_1",
+      "at": 385.02,
+      "dur": 14.0,
+      "side": "r",
+      "anchored": true
+    },
+    {
+      "block": 10,
+      "kind": "chips",
+      "id": "e10_2",
+      "at": 399.72,
+      "dur": 9.0,
+      "side": "l",
+      "anchored": false
+    },
+    {
+      "block": 11,
+      "kind": "steps",
+      "id": "e11_1",
+      "at": 433.33,
+      "dur": 11.0,
+      "side": "l",
+      "anchored": true
+    },
+    {
+      "block": 11,
+      "kind": "miners",
+      "id": "e11_2",
+      "at": 445.03,
+      "dur": 11.0,
+      "side": "r",
+      "anchored": true
+    },
+    {
+      "block": 12,
+      "kind": "quote",
+      "id": "e12_1",
+      "at": 470.91,
+      "dur": 9.0,
+      "side": "l",
+      "anchored": false
+    },
+    {
+      "block": 12,
+      "kind": "outro",
+      "id": "e12_2",
+      "at": 480.61,
+      "dur": 28.15,
+      "side": "r",
+      "anchored": false
+    }
+  ],
+  "notes": [
+    "#6 quote: нет места в блоке, пропущено",
+    "#7 quote: нет места в блоке, пропущено"
+  ],
+  "author": {
+    "name": "Дмитрий Царьков",
+    "role": "управляющий активами"
+  }
+}

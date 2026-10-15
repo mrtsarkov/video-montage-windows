@@ -30,6 +30,7 @@ import numpy as np
 RATE = 8000
 CLIP_ADD_LIMIT_PP = 0.3     # allowed clipping added by the grade
 CLIP_HARD_PCT = 2.0         # absolute ceiling when no source is available
+GRAPHICS_SKIP_PCT = 0.02    # frames with this much visible graphics are not a grade sample
 JITTER_LIMIT_PX = 0.25      # §12.4
 SYNC_LIMIT_MS = 5.0         # §12.11
 PROHIBITED = ["infinite", "Math.random", "Date.now", "performance.now"]
@@ -166,10 +167,29 @@ def check_audio_sync(final: Path, edit: Path) -> dict:
             "target": f"|lag| <= {SYNC_LIMIT_MS} ms"}
 
 
+def layer_coverage(edit: Path, t: float, thr: int = 31) -> float | None:
+    """Share of the frame covered by visible graphics at timeline time t.
+
+    §12.9 measures what the *grade* does to the picture. Brand plates are white
+    on purpose, so a frame that carries graphics is not a fair sample of the
+    grade: those frames are reported and skipped instead of counted as clipping.
+    """
+    layer = edit / "layer-front.mov"
+    if not layer.is_file():
+        return None
+    raw = ff(["ffmpeg", "-v", "error", "-ss", f"{t:.3f}", "-i", str(layer), "-frames:v", "1",
+              "-vf", f"alphaextract,scale={GW}:{GH}:flags=area,format=gray", "-f", "rawvideo",
+              "-pix_fmt", "gray", "-"], binary=True)
+    if len(raw) < GW * GH:
+        return None
+    return float((np.frombuffer(raw[: GW * GH], dtype=np.uint8) > thr).mean())
+
+
 def check_levels(final: Path, edit: Path, source: Path | None, samples: int = 24) -> dict:
     edl = edl_of(edit)
     paired = bool(source and Path(source).is_file() and edl)
     src_clip, fin_clip, luma_diff = [], [], []
+    graphics_skipped = 0
     if paired:
         step = max(1, len(edl) // samples)
         t_line = 0.0
@@ -178,6 +198,10 @@ def check_levels(final: Path, edit: Path, source: Path | None, samples: int = 24
             mid, line_mid = (a + b) / 2, t_line + (b - a) / 2
             t_line += b - a
             if i % step:
+                continue
+            cov = layer_coverage(edit, line_mid)
+            if cov is not None and cov > GRAPHICS_SKIP_PCT:
+                graphics_skipped += 1
                 continue
             gs, gf = gray_frame(Path(source), mid), gray_frame(final, line_mid)
             if gs is None or gf is None:
@@ -191,13 +215,20 @@ def check_levels(final: Path, edit: Path, source: Path | None, samples: int = 24
     dur = float(ff(["ffprobe", "-v", "error", "-show_entries", "format=duration",
                     "-of", "csv=p=0", str(final)]).strip())
     for i in range(12):
-        g = gray_frame(final, dur * (i + 0.5) / 12)
+        t = dur * (i + 0.5) / 12
+        cov = layer_coverage(edit, t)
+        if cov is not None and cov > GRAPHICS_SKIP_PCT:
+            graphics_skipped += 1
+            continue
+        g = gray_frame(final, t)
         if g is None:
             continue
         grid_clip0 = max(grid_clip0, float((g == 0).mean() * 100))
         grid_clip255 = max(grid_clip255, float((g == 255).mean() * 100))
         p50s.append(float(np.percentile(g, 50)))
 
+    note = (f"{graphics_skipped} frame(s) skipped: graphics on screen (§9.3 plates are white "
+            f"by design)" if graphics_skipped else "")
     if paired and src_clip:
         add = float(np.mean(fin_clip) - np.mean(src_clip))
         ok = add <= CLIP_ADD_LIMIT_PP
@@ -206,11 +237,13 @@ def check_levels(final: Path, edit: Path, source: Path | None, samples: int = 24
                             f"-> final {np.mean(fin_clip):.2f}% clipped at 255 "
                             f"(grade adds {add:+.2f} pp); p50 {min(p50s):.0f}-{max(p50s):.0f}; "
                             f"mean luma change {np.mean(luma_diff):.2f}/255",
-                "target": f"grade adds <= {CLIP_ADD_LIMIT_PP} pp of clipping"}
+                "target": f"grade adds <= {CLIP_ADD_LIMIT_PP} pp of clipping",
+                "note": note}
     ok = grid_clip0 <= CLIP_HARD_PCT and grid_clip255 <= CLIP_HARD_PCT
     return {"check": "levels", "status": "PASS" if ok else "FAIL",
             "measured": f"no source given: clipped at 0 {grid_clip0:.3f}%, at 255 {grid_clip255:.3f}%",
-            "target": f"<= {CLIP_HARD_PCT}% both ends (or pass --source for a paired test)"}
+            "target": f"<= {CLIP_HARD_PCT}% both ends (or pass --source for a paired test)",
+            "note": note}
 
 
 def check_jitter(edit: Path, elements: int = 4, frames: int = 12) -> dict:

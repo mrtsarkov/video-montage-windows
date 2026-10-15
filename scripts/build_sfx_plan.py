@@ -28,6 +28,23 @@ ELEMENT_TYPE = {
     "counter": "click",
     "scale": "pop",
     "stepper": "pop",
+    # script-plan elements (generate_comp_plan.py)
+    "title": "impact",
+    "divider": "pop",
+    "quotes": "pop",
+    "chart": "pop",
+    "table": "pop",
+    "timeline": "pop",
+    "funnel": "pop",
+    "diagram": "pop",
+    "steps": "pop",
+    "chips": "pop",
+    "stat": "click",
+    "miners": "click",
+    "premium": "pop",
+    "quote": "pop",
+    "scenario": "pop",
+    "outro": "impact",
 }
 
 
@@ -97,7 +114,8 @@ def main() -> int:
     events: list[dict] = []
     missing: list[str] = []
     for t, element in parse_plan(edit):
-        kind = ELEMENT_TYPE.get(element)
+        # "divider7", "e3_1" and friends: the base name carries the intent
+        kind = ELEMENT_TYPE.get(element) or ELEMENT_TYPE.get(re.sub(r"[\d_]+$", "", element))
         if not kind:
             continue
         entry = pick(catalog, kind)

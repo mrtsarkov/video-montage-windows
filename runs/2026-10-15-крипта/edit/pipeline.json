@@ -1,0 +1,57 @@
+{
+  "label": "2026-10-15-крипта",
+  "take": "D:\\LLM\\video-montage-template\\takes\\2026-10-15 13-54-01.mp4",
+  "script": "D:\\LLM\\video-montage-template\\script\\2026-10-15-крипта.md",
+  "stages": [
+    {
+      "stage": "env",
+      "status": "ok",
+      "seconds": 0.6
+    },
+    {
+      "stage": "edl",
+      "status": "skipped"
+    },
+    {
+      "stage": "script_plan",
+      "status": "skipped"
+    },
+    {
+      "stage": "voice",
+      "status": "skipped"
+    },
+    {
+      "stage": "comp",
+      "status": "skipped"
+    },
+    {
+      "stage": "check",
+      "status": "skipped"
+    },
+    {
+      "stage": "render",
+      "status": "skipped"
+    },
+    {
+      "stage": "sfx",
+      "status": "skipped"
+    },
+    {
+      "stage": "final",
+      "status": "skipped"
+    },
+    {
+      "stage": "verify",
+      "status": "skipped"
+    },
+    {
+      "stage": "verify_extra",
+      "status": "skipped"
+    },
+    {
+      "stage": "report",
+      "status": "skipped"
+    }
+  ],
+  "total_seconds": 0.6
+}

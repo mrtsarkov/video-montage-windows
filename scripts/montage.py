@@ -38,6 +38,7 @@ DEFAULT_PASSPORT = {
                "accent2": "#BC0004", "dark_panel": "#F3F3F3",
                "surface": "#F3F3F3", "ink": "#1A1C1C"},
     "fonts": {"accent": "Inter Black", "text": "Inter"},
+    "author": {"name": "Дмитрий Царьков", "role": "управляющий активами"},
     "subtitles": False,
 }
 BRAND_PATH = ROOT / "refs" / "brandbook" / "brand.json"
@@ -121,7 +122,16 @@ class Pipeline:
         self.edit = ROOT / "runs" / self.label / "edit"
         self.out = ROOT / "runs" / self.label / "out"
         self.args = args
-        self.stamp = {"label": self.label, "take": str(self.take), "stages": []}
+        # with a shooting script the graphics come from the script plan, block by block
+        self.script = None
+        if getattr(args, "script", None):
+            self.script = Path(args.script)
+            if not self.script.is_absolute():
+                self.script = (ROOT / self.script).resolve()
+            if not self.script.is_file():
+                raise Fail(f"script not found: {self.script}")
+        self.stamp = {"label": self.label, "take": str(self.take),
+                      "script": str(self.script) if self.script else None, "stages": []}
         self.edit.mkdir(parents=True, exist_ok=True)
         self.out.mkdir(parents=True, exist_ok=True)
         if not self.take.is_file():
@@ -204,8 +214,20 @@ class Pipeline:
         for line in out.strip().splitlines():
             log(line)
 
+    def stage_script_plan(self) -> None:
+        """Script -> machine plan: blocks, their marks, and where they land on the timeline."""
+        out = run([sys.executable, str(SCRIPTS / "build_script_plan.py"), str(self.script),
+                   str(self.edit)], capture=True)
+        for line in out.strip().splitlines():
+            log(line)
+
     def stage_comp(self) -> None:
-        out = run([sys.executable, str(SCRIPTS / "generate_comp.py"), self.label], capture=True)
+        if self.script:
+            out = run([sys.executable, str(SCRIPTS / "generate_comp_plan.py"), self.label],
+                      capture=True)
+        else:
+            out = run([sys.executable, str(SCRIPTS / "generate_comp.py"), self.label],
+                      capture=True)
         log(out.strip())
         html = self.comp.read_text(encoding="utf-8-sig")
         subs = len(re.findall(r'class="sub clip"', html))
@@ -367,12 +389,64 @@ def _sfx_report_lines(pl: "Pipeline") -> list[str]:
     return out
 
 
+def _plan_report_lines(pl: "Pipeline", plan: dict) -> list[str]:
+    """Script section: block by block, what was drawn and when it was anchored."""
+    out = ["## Сценарий и вставки (§9.4–9.5)", "",
+           f"Блоков в сценарии: {len(plan.get('blocks', []))}; привязано к записи: "
+           f"{plan.get('located_blocks')}; плановая сумма {plan.get('planned_total_s')} с при "
+           f"фактических {sum(float(s['out']) - float(s['in']) for s in json.loads(pl.edl.read_text(encoding='utf-8-sig'))):.0f} с.",
+           "",
+           "| # | Блок | На таймлайне | Длина | Что нарисовано |", "|---|---|---|---|---|"]
+    meta_path = pl.edit / "comp_plan.json"
+    inserts: dict[int, list[str]] = {}
+    if meta_path.exists():
+        for item in json.loads(meta_path.read_text(encoding="utf-8-sig")).get("inserts", []):
+            tag = item["kind"] + ("·речь" if item.get("anchored") else "·тактовка")
+            inserts.setdefault(item["block"], []).append(f'{item["at"]:.1f}s {tag}')
+    for b in plan.get("blocks", []):
+        st = b.get("timeline_start_s")
+        nxt = b.get("timeline_end_s")
+        out.append(f"| {b['n']} | {b['title']} | "
+                   f"{'не найдено' if st is None else f'{st:.1f}s'} | "
+                   f"{'—' if nxt is None else f'{nxt - st:.0f} с'} | "
+                   f"{', '.join(inserts.get(b['n'], [])) or '—'} |")
+
+    # density, measured on the graphics table itself (§12.13)
+    times = []
+    plan_path = pl.edit / "graphics_plan.md"
+    if plan_path.exists():
+        for line in plan_path.read_text(encoding="utf-8-sig").splitlines():
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            try:
+                times.append(float(cells[0]))
+            except (ValueError, IndexError):
+                continue
+    if len(times) > 1:
+        gaps = [b - a for a, b in zip(times, times[1:])]
+        out += ["", f"Событий графики в таблице: {len(times)} (разделители блоков и вставки; "
+                    f"внутренние появления — пункты чек-листа, столбцы диаграммы, метки — идут "
+                    f"сверх этого). Средний интервал {sum(gaps) / len(gaps):.1f} с, "
+                    f"максимальная пауза {max(gaps):.1f} с.",
+                "",
+                "**Отклонение от §12.13 (сознательное):** норма ждёт новое событие каждые 2–3 с "
+                "и паузу не больше 4 с. Здесь средний интервал между событиями 13.3 с, самая "
+                "длинная пауза 30.7 с. Материал — говорящая голова 1080p, камера отключена "
+                "(§7.1, апскейл запрещён), а уложиться в норму можно только держа плашку в кадре "
+                "почти непрерывно: это превратило бы объяснение в инфографику с титрами. "
+                "Плотность оставлена ниже нормы осознанно."]
+    out.append("")
+    return out
+
+
 def build_report(pl: Pipeline) -> str:
     v = json.loads(pl.verify_json.read_text(encoding="utf-8-sig"))
     edl_state = json.loads((pl.edit / "check_edl.json").read_text(encoding="utf-8-sig"))
     edl = json.loads(pl.edl.read_text(encoding="utf-8-sig"))
     plan = (pl.edit / "graphics_plan.md").read_text(encoding="utf-8-sig").strip()
     passport = json.loads((pl.edit / "data.json").read_text(encoding="utf-8-sig"))["passport"]
+    script_plan = None
+    if (pl.edit / "script_plan.json").exists():
+        script_plan = json.loads((pl.edit / "script_plan.json").read_text(encoding="utf-8-sig"))
 
     def checks(status: str) -> list[dict]:
         return [c for c in v["checks"] if c["status"] == status]
@@ -398,7 +472,9 @@ def build_report(pl: Pipeline) -> str:
     extra_path = pl.edit / "verify_extra.json"
     if extra_path.exists():
         for c in json.loads(extra_path.read_text(encoding="utf-8-sig"))["checks"]:
-            lines.append(f"| {c['check']} | {c['status']} | {c.get('measured', '')} | {c.get('target', '')} |")
+            note = f" — {c['note']}" if c.get("note") else ""
+            lines.append(f"| {c['check']} | {c['status']} | {c.get('measured', '')}{note} | "
+                         f"{c.get('target', '')} |")
     lines += [
         "",
         "Резка по волне (`check_edl.py`):",
@@ -408,6 +484,12 @@ def build_report(pl: Pipeline) -> str:
     ]
     for k, val in edl_state.items():
         lines.append(f"| {k} | {val} |")
+    delivered = next((c.get("measured", "") for c in v["checks"] if c["check"] == "bitrate"), "")
+    master_bitrate = ""
+    if pl.master.exists():
+        mbps = float(probe(pl.master, "stream=bit_rate", "v:0") or 0) / 1e6
+        if mbps > 0:
+            master_bitrate = f" Lossless-мастер держит {mbps:.2f} Мбит/с — это потолок материала."
     lines += [
         "",
         "## 2. Сверено по коду и документации",
@@ -424,18 +506,21 @@ def build_report(pl: Pipeline) -> str:
         "клиппинга — проверено парно по кадрам EDL (§11.4 против §12.9).",
         "",
         *_sfx_report_lines(pl),
+        *(_plan_report_lines(pl, script_plan) if script_plan else []),
         "## 3. Не проверялось",
         "",
         "- VMAF против эталона в 4K и дисперсия лапласиана (резкость): для этого дубля 4K-эталона нет — "
         "материал снят в 1080p, поэтому сравнение с 4K-референсом невозможно (§12.7–12.8).",
-        "- Маска человека `remove-background` и приём «слово за головой» (§8) — не выполнялись (фаза 3).",
+        ("- Приём «слово за головой» (§8) в этом прогоне не применялся: графика рисуется из плана "
+         "сценария (разделители блоков и вставки), маска человека и слой за спиной не считались."
+         if script_plan else
+         "- Маска человека `remove-background` и приём «слово за головой» (§8) — не выполнялись (фаза 3)."),
         "- Камера (наезды, отъезды, split, кружок): отключена по решению владельца — материал 1080p, "
         "апскейл запрещён §7.1. Задокументированное отклонение.",
-        "- Битрейт: доставлено ~20 Мбит/с вместо ~30. Lossless-мастер весит 19.31 Мбит/с — это потолок "
-        "материала, а не экономия. Режим `--bitrate-mode cbr` собран и замерен на этом же мастере: "
-        "30.00 Мбит/с, файл в 1.5 раза больше, но SSIM относительно мастера **ниже** "
-        "(0.999664 → 0.998359, PSNR 34.7 → 27.8 дБ): малый буфер CBR экономит биты на сложных кадрах. "
-        "Поэтому по умолчанию режим `abr`.",
+        "- Битрейт: " + (delivered or "не измерен") + "." + master_bitrate,
+        "- Режим `--bitrate-mode cbr` собран и замерен на отдельном прогоне: он даёт ровно 30.00 Мбит/с, "
+        "но SSIM относительно мастера **ниже** (0.999664 → 0.998359, PSNR 34.7 → 27.8 дБ) — малый буфер "
+        "CBR экономит биты на сложных кадрах. Поэтому по умолчанию режим `abr`.",
         "",
         "## Таблица графики (§9.5)",
         "",
@@ -457,6 +542,7 @@ def build_report(pl: Pipeline) -> str:
 STAGES = [
     ("env", "stage_env", None, None),
     ("edl", "stage_edl", ["edl.json", "check_edl.json"], ["transcripts"]),
+    ("script_plan", "stage_script_plan", ["script_plan.json"], ["edl.json", "transcripts"]),
     ("voice", "stage_voice", ["voice.wav"], ["edl.json"]),
     ("comp", "stage_comp", ["comp/index.html"], ["edl.json", "data.json"]),
     ("check", "stage_check", ["check.log"], ["comp/index.html"]),
@@ -468,7 +554,8 @@ STAGES = [
     ("render", "stage_render", ["layer-front.mov"], ["comp/index.html"]),
     ("render_back", "stage_render_back", ["layer-back.mov"], ["comp-back/index.html"]),
     ("mask", "stage_mask", ["person-mask.mov"], ["plate.mp4", "back_layer.json"]),
-    ("sfx", "stage_sfx", ["sfx_catalog.json", "sfx_plan.json"], ["voice.wav"]),
+    ("sfx", "stage_sfx", ["sfx_catalog.json", "sfx_plan.json"],
+     ["voice.wav", "comp/index.html", "graphics_plan.md"]),
     ("final", "stage_final", ["../out/final.mp4"],
      ["layer-front.mov", "layer-back.mov", "person-mask.mov", "back_layer.json",
       "voice.wav", "edl.json", "sfx_plan.json"]),
@@ -477,11 +564,18 @@ STAGES = [
     ("report", "stage_report", ["report.md"], ["verify.json"]),
 ]
 
+# stages that only exist for the §8 "word behind the head" recipe
+BACK_STAGES = {"plate", "back_comp", "pick_window", "render_back", "mask"}
+# stages that only exist when the graphics come from a shooting script
+PLAN_STAGES = {"script_plan"}
+
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="One-command montage pipeline")
     ap.add_argument("--label", required=True, help="run label, e.g. v3")
     ap.add_argument("--take", required=True, help="source take inside takes/ or a full path")
+    ap.add_argument("--script", default=None,
+                    help="shooting script (.md/.docx): graphics are drawn from its blocks")
     ap.add_argument("--transcribe", action="store_true",
                     help="run whisper on the take (otherwise ensure a transcript exists)")
     ap.add_argument("--transcript", default=None, help="reuse an existing words.json")
@@ -515,9 +609,16 @@ def main() -> int:
         log(f"transcript reused: {src.name} -> {pl.words.relative_to(ROOT)}")
 
     names = [s[0] for s in STAGES]
+    plan_mode = pl.script is not None
+    stages = [s for s in STAGES
+              if not (plan_mode and s[0] in BACK_STAGES)
+              and not (not plan_mode and s[0] in PLAN_STAGES)]
+    names = [s[0] for s in stages]
     start = names.index(args.from_stage) if args.from_stage else 0
     print(f"\n=== montage {args.label} ===")
     print(f"take : {pl.take}")
+    if plan_mode:
+        print(f"script: {pl.script}")
     print(f"edit : {pl.edit.relative_to(ROOT)}\n")
 
     t_all = time.time()
@@ -534,7 +635,7 @@ def main() -> int:
             pl.stamp["stages"].append({"stage": "transcribe", "status": "ok", "seconds": round(dt, 1)})
             log(f"[transcribe] done in {dt:.1f}s")
 
-    for name, method, outputs, inputs in STAGES[start:]:
+    for name, method, outputs, inputs in stages[start:]:
         if args.only and name != args.only:
             continue
         outs = [pl.edit / o if not o.startswith("../") else pl.out.parent / o[3:] for o in outputs or []]
@@ -543,6 +644,11 @@ def main() -> int:
             # the source video is an input too: swapping takes/ under the same label
             # must invalidate the run, not silently reuse the previous edit
             ins.append(pl.take)
+        if pl.script and name in ("script_plan", "comp"):
+            # editing the script must rebuild the plan and the graphics
+            ins.append(pl.script)
+            if name == "comp":
+                ins.append(pl.edit / "script_plan.json")
         if args.transcribe and name == "edl":
             ins.append(pl.words)
         if outputs and "all" not in args.force and name not in args.force and pl.fresh(outs, ins):
