@@ -5,7 +5,7 @@
     {
       "stage": "env",
       "status": "ok",
-      "seconds": 0.5
+      "seconds": 0.7
     },
     {
       "stage": "edl",
@@ -68,5 +68,5 @@
       "status": "skipped"
     }
   ],
-  "total_seconds": 0.5
+  "total_seconds": 0.7
 }

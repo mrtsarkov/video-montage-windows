@@ -539,6 +539,10 @@ def main() -> int:
             continue
         outs = [pl.edit / o if not o.startswith("../") else pl.out.parent / o[3:] for o in outputs or []]
         ins = [pl.edit / i for i in inputs or []]
+        if name in ("edl", "voice", "plate", "final"):
+            # the source video is an input too: swapping takes/ under the same label
+            # must invalidate the run, not silently reuse the previous edit
+            ins.append(pl.take)
         if args.transcribe and name == "edl":
             ins.append(pl.words)
         if outputs and "all" not in args.force and name not in args.force and pl.fresh(outs, ins):
