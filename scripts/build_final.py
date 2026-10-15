@@ -85,6 +85,98 @@ def build_plate(src: Path, edl: list[dict], corr: dict, out: Path) -> None:
          "-color_trc", "bt709", str(out)])
 
 
+def load_stage(edit: Path) -> dict:
+    """Frame-stage windows written by the composition generator.
+
+    mode `glass` - the whole frame is blurred behind the liquid-glass plate of a
+    block divider; mode `push` - the speaker is moved aside and shrunk over a
+    blurred backdrop so the closing panel does not cover his face.
+    """
+    path = edit / "stage.json"
+    if not path.is_file():
+        return {"windows": [], "montage_s": None, "layer_s": None}
+    try:
+        return json.loads(path.read_text(encoding="utf-8-sig"))
+    except json.JSONDecodeError:
+        return {"windows": [], "montage_s": None, "layer_s": None}
+
+
+def push_geometry(width: int = 1920, height: int = 1080) -> dict:
+    """Crop the speaker out of the frame and park him on the left third.
+
+    The crop keeps the whole head and shoulders (measured on this take: hair
+    640..1300 px, shoulders 560..1360 px) and scales down - never up, so the
+    pushed frame stays inside the source resolution.
+    """
+    cw, ch, cx, cy = 1000, height, 400, 0
+    pw = 660
+    ph = int(round(ch * pw / cw / 2.0) * 2)
+    return {"cw": cw, "ch": ch, "cx": cx, "cy": cy, "pw": pw, "ph": ph,
+            "px": 40, "py": max(0, (height - ph) // 2)}
+
+
+def ensure_feather(edit: Path, geom: dict) -> Path:
+    """One-off soft-edged mask for the pushed frame.
+
+    A hard crop edge over a blurred backdrop reads as a picture-in-picture box; a
+    feathered edge makes the speaker dissolve into the backdrop, which is what
+    "the frame moves him aside" should look like.
+    """
+    path = edit / "push-feather.png"
+    w, h = geom["pw"], geom["ph"]
+    inset_x, inset_y = max(24, int(w * 0.10)), max(24, int(h * 0.09))
+    if not path.is_file():
+        subprocess.run(
+            ["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", f"color=black:s={w}x{h}",
+             "-vf", (f"drawbox=x={inset_x}:y={inset_y}:w={w - 2 * inset_x}:h={h - 2 * inset_y}"
+                     f":color=white:t=fill,gblur=sigma=30"), "-frames:v", "1", str(path)],
+            check=True)
+    return path
+
+
+def stage_graph(chains: list[str], label: str, stage: dict,
+                feather_idx: int | None = None) -> str:
+    """Insert the glass blur and the push below `label`; return the new tail label."""
+    windows = stage.get("windows") or []
+    glass = [(float(w["start"]), float(w["end"])) for w in windows if w.get("mode") == "glass"]
+    push = [(float(w["start"]), float(w["end"])) for w in windows if w.get("mode") == "push"]
+    if not glass and not push:
+        return label
+
+    # split off the sources we need: the untouched frame, the blurred backdrop, and
+    # (for the push) the frame the speaker is cropped out of
+    outs = ["sbase", "gsrc"] + (["psrc"] if push else [])
+    chains.append(f"[{label}]split={len(outs)}[" + "][".join(outs) + "]")
+    chains.append("[gsrc]gblur=sigma=24:steps=2,eq=brightness=0.02:saturation=0.93[blurred]")
+
+    tail = "sbase"
+    if glass:
+        expr = "+".join(f"between(t,{a:.3f},{b:.3f})" for a, b in glass)
+        chains.append(f"[{tail}][blurred]overlay=enable='{expr}'[glassed]")
+        tail = "glassed"
+    if push:
+        a, b = push[0]
+        g = push_geometry()
+        chains.append("[blurred]eq=brightness=-0.10:saturation=0.85,"
+                      "gblur=sigma=36:steps=2[pback]")
+        chains.append(f"[psrc]crop={g['cw']}:{g['ch']}:{g['cx']}:{g['cy']},"
+                      f"scale={g['pw']}:{g['ph']},format=yuva420p[pcrop]")
+        if feather_idx is not None:
+            chains.append(f"[{feather_idx}:v]format=gray,scale={g['pw']}:{g['ph']}[pmask]")
+            # shortest=1: the mask is a looped still, so the cut-out must end with
+            # the picture instead of running forever
+            chains.append("[pcrop][pmask]alphamerge=shortest=1[pcut]")
+        else:
+            chains.append("[pcrop]null[pcut]")
+        chains.append(f"[pback][pcut]overlay=x={g['px']}:y={g['py']}[pfull]")
+        chains.append(f"[pfull]format=yuva420p,"
+                      f"fade=in:st={a:.3f}:d=0.45:alpha=1,"
+                      f"fade=out:st={max(a, b - 0.45):.3f}:d=0.45:alpha=1[pfade]")
+        chains.append(f"[{tail}][pfade]overlay=x=0:y=0[stageout]")
+        tail = "stageout"
+    return tail
+
+
 def build_master(src: Path, edl: list[dict], layers: list[Path], corr: dict,
                  out: Path, matrix_fix: bool, edit: Path | None = None) -> None:
     """Compose the plate with the graphics layers.
@@ -109,6 +201,30 @@ def build_master(src: Path, edl: list[dict], layers: list[Path], corr: dict,
     use_back = bool(back and back.exists() and mask and mask.exists()
                     and meta_path and meta_path.exists())
 
+    # inputs: 0 = source, then the §8 back layer + matte, then the front layers, and
+    # last (when the speaker is pushed aside) the one-off feather mask. The index is
+    # resolved before the graph is written because the graph refers to it.
+    inputs: list[tuple[str, list[str]]] = [(str(src), [])]
+    if use_back:
+        inputs += [(str(back), []), (str(mask), [])]
+    for layer in layers:
+        inputs.append((str(layer), []))
+    stage = load_stage(edit) if edit else {"windows": []}
+    has_push = any(w.get("mode") == "push" for w in (stage.get("windows") or []))
+    feather_idx = None
+    if has_push and edit is not None:
+        try:
+            feather = ensure_feather(edit, push_geometry())
+            feather_idx = len(inputs)
+            inputs.append((str(feather), ["-loop", "1"]))
+        except subprocess.CalledProcessError as exc:
+            print(f"      ! feather mask failed, push keeps a hard edge: {exc}",
+                  file=sys.stderr)
+
+    # the frame stage: liquid-glass blur behind dividers, speaker pushed aside
+    # for the closing panel (stage.json, written with the composition)
+    base_label = stage_graph(chains, "vc", stage, feather_idx)
+
     if use_back:
         meta = json.loads(meta_path.read_text(encoding="utf-8-sig"))
         start = float(meta["start_s"])
@@ -118,7 +234,7 @@ def build_master(src: Path, edl: list[dict], layers: list[Path], corr: dict,
         pad_out = f":stop_mode=add:stop_duration={tail:.3f}"
         idx_back, idx_mask = 1, 2
         # the person keeps the plate's colour; the matte contributes alpha only (§8)
-        chains.append("[vc]split=2[base][person_src]")
+        chains.append(f"[{base_label}]split=2[base][person_src]")
         if matrix_fix:
             chains.append(
                 f"[{idx_back}:v]format=yuva444p10le,"
@@ -133,7 +249,7 @@ def build_master(src: Path, edl: list[dict], layers: list[Path], corr: dict,
                       f"enable='between(t,{start:.3f},{start + length:.3f})'[o2]")
         last, first_layer_idx = "o2", 3
     else:
-        last, first_layer_idx = "vc", 1
+        last, first_layer_idx = base_label, 1
         if edit:
             print("      ! back layer or person matte missing: the word stays in front")
 
@@ -162,11 +278,9 @@ def build_master(src: Path, edl: list[dict], layers: list[Path], corr: dict,
     if len(graph) > 30000:
         raise SystemExit(f"filter graph too long for the command line ({len(graph)} chars)")
 
-    cmd = ["ffmpeg", "-y", "-v", "error", "-i", str(src)]
-    if use_back:
-        cmd += ["-i", str(back), "-i", str(mask)]
-    for layer in layers:
-        cmd += ["-i", str(layer)]
+    cmd = ["ffmpeg", "-y", "-v", "error"]
+    for path, extra in inputs:
+        cmd += extra + ["-i", path]
     cmd += ["-filter_complex", graph, "-map", "[vout]", "-an",
             "-c:v", "libx264", "-qp", "0", "-preset", "veryfast",
             "-pix_fmt", "yuv420p", "-color_range", "tv",
@@ -286,7 +400,7 @@ def encode_final(master: Path, voice: Path, out: Path, bitrate: str, two_pass: b
     else:
         pass_args = []
     run(["ffmpeg", "-y", "-v", "error", "-i", str(master), "-i", str(voice),
-         "-map", "0:v", "-map", "1:a", *common, *pass_args,
+         "-map", "0:v", "-map", "1:a", "-af", "apad", *common, *pass_args,
          "-c:a", "aac", "-b:a", "192k", "-t", f"{duration:.3f}",
          "-movflags", "+faststart", str(out)])
 
@@ -321,7 +435,19 @@ def main() -> int:
     edl = json.loads((edit / "edl.json").read_text(encoding="utf-8-sig"))
     data = json.loads((edit / "data.json").read_text(encoding="utf-8-sig"))
     corr = data.get("correction", {})
-    duration = sum(float(s["out"]) - float(s["in"]) for s in edl)
+    montage = sum(float(s["out"]) - float(s["in"]) for s in edl)
+    # the graphics layer runs past the footage: the brand end card plays on the
+    # frozen last frame, so the deliverable is longer than the EDL sum
+    duration = montage
+    layer_duration = None
+    timeline_path = edit / "timeline.json"
+    if timeline_path.is_file():
+        try:
+            tl = json.loads(timeline_path.read_text(encoding="utf-8-sig"))
+            duration = float(tl.get("total_s") or montage)
+            layer_duration = float(tl.get("layer_s") or duration)
+        except (json.JSONDecodeError, TypeError, ValueError):
+            duration = montage
 
     layers = []
     for name in [n.strip() for n in args.layers.split(",") if n.strip()]:
@@ -354,7 +480,7 @@ def main() -> int:
         build_master(src, edl, layers, corr, master, not args.no_matrix_fix, edit)
     mdur = probe_duration(master)
     print(f"      {master.name} {master.stat().st_size / 1e6:.0f} MB, {mdur:.3f}s "
-          f"(expect {duration:.3f}s, delta {mdur - duration:+.3f}s)")
+          f"(footage {montage:.3f}s, deliverable {duration:.3f}s, delta {mdur - duration:+.3f}s)")
 
     voice_src = edit / "voice.wav"
     if not voice_src.exists():

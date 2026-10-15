@@ -1,232 +1,433 @@
 {
-  "label": "Доля акций Cerebras",
-  "duration_s": 509.26,
+  "label": "2026-10-15-крипта",
+  "duration_s": 505.93,
+  "layer_s": 510.98,
+  "endcard_at": 505.58,
   "blocks": 12,
-  "elements": 48,
+  "elements": 41,
   "inserts": [
+    {
+      "block": 1,
+      "kind": "title",
+      "id": "ttl1",
+      "at": 7.0,
+      "dur": 6.2,
+      "side": "top",
+      "anchored": true,
+      "layout": "title"
+    },
+    {
+      "block": 2,
+      "kind": "divider",
+      "id": "dv2",
+      "at": 43.81,
+      "dur": 2.3,
+      "side": "center",
+      "anchored": true,
+      "layout": "glass"
+    },
+    {
+      "block": 3,
+      "kind": "divider",
+      "id": "dv3",
+      "at": 85.2,
+      "dur": 2.3,
+      "side": "center",
+      "anchored": true,
+      "layout": "glass"
+    },
+    {
+      "block": 4,
+      "kind": "divider",
+      "id": "dv4",
+      "at": 126.64,
+      "dur": 2.3,
+      "side": "center",
+      "anchored": true,
+      "layout": "glass"
+    },
+    {
+      "block": 5,
+      "kind": "divider",
+      "id": "dv5",
+      "at": 170.0,
+      "dur": 2.3,
+      "side": "center",
+      "anchored": true,
+      "layout": "glass"
+    },
+    {
+      "block": 6,
+      "kind": "divider",
+      "id": "dv6",
+      "at": 218.49,
+      "dur": 2.3,
+      "side": "center",
+      "anchored": true,
+      "layout": "glass"
+    },
+    {
+      "block": 7,
+      "kind": "divider",
+      "id": "dv7",
+      "at": 261.78,
+      "dur": 2.3,
+      "side": "center",
+      "anchored": true,
+      "layout": "glass"
+    },
+    {
+      "block": 8,
+      "kind": "divider",
+      "id": "dv8",
+      "at": 300.78,
+      "dur": 2.3,
+      "side": "center",
+      "anchored": true,
+      "layout": "glass"
+    },
+    {
+      "block": 9,
+      "kind": "divider",
+      "id": "dv9",
+      "at": 340.53,
+      "dur": 2.3,
+      "side": "center",
+      "anchored": true,
+      "layout": "glass"
+    },
+    {
+      "block": 10,
+      "kind": "divider",
+      "id": "dv10",
+      "at": 380.14,
+      "dur": 2.3,
+      "side": "center",
+      "anchored": true,
+      "layout": "glass"
+    },
+    {
+      "block": 11,
+      "kind": "divider",
+      "id": "dv11",
+      "at": 422.12,
+      "dur": 2.3,
+      "side": "center",
+      "anchored": true,
+      "layout": "glass"
+    },
+    {
+      "block": 12,
+      "kind": "divider",
+      "id": "dv12",
+      "at": 467.76,
+      "dur": 2.3,
+      "side": "center",
+      "anchored": true,
+      "layout": "glass"
+    },
     {
       "block": 1,
       "kind": "chips",
       "id": "e1_1",
-      "at": 14.0,
+      "at": 13.9,
       "dur": 10.0,
       "side": "l",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 1,
       "kind": "quotes",
       "id": "e1_2",
-      "at": 27.04,
+      "at": 27.09,
       "dur": 12.0,
       "side": "r",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 2,
       "kind": "chips",
       "id": "e2_1",
-      "at": 44.93,
+      "at": 47.0,
       "dur": 11.0,
       "side": "r",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 2,
       "kind": "chips",
       "id": "e2_2",
-      "at": 75.64,
+      "at": 74.03,
       "dur": 11.0,
       "side": "l",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 3,
       "kind": "diagram",
       "id": "e3_1",
-      "at": 92.54,
+      "at": 88.3,
       "dur": 13.0,
       "side": "r",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 3,
       "kind": "quote",
       "id": "e3_2",
-      "at": 106.24,
-      "dur": 10.0,
+      "at": 120.59,
+      "dur": 5.9,
       "side": "l",
-      "anchored": false
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 4,
       "kind": "timeline",
       "id": "e4_1",
-      "at": 129.48,
-      "dur": 12.0,
+      "at": 129.91,
+      "dur": 8.99,
       "side": "r",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 4,
       "kind": "chips",
       "id": "e4_2",
-      "at": 143.15,
-      "dur": 10.0,
+      "at": 139.6,
+      "dur": 6.57,
       "side": "l",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
+    },
+    {
+      "block": 4,
+      "kind": "compare",
+      "id": "e4_3",
+      "at": 146.87,
+      "dur": 11.0,
+      "side": "r",
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 5,
       "kind": "stat",
       "id": "e5_1",
-      "at": 176.38,
+      "at": 175.6,
       "dur": 11.0,
       "side": "r",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 5,
       "kind": "chart",
       "id": "e5_2",
-      "at": 202.38,
-      "dur": 9.83,
+      "at": 200.65,
+      "dur": 12.0,
       "side": "l",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 6,
       "kind": "premium",
       "id": "e6_1",
-      "at": 223.47,
-      "dur": 12.0,
+      "at": 222.29,
+      "dur": 6.9,
       "side": "r",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
+    },
+    {
+      "block": 6,
+      "kind": "quote",
+      "id": "e6_2",
+      "at": 229.89,
+      "dur": 9.46,
+      "side": "l",
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 6,
       "kind": "chips",
-      "id": "e6_2",
-      "at": 250.31,
-      "dur": 6.0,
+      "id": "e6_3",
+      "at": 240.05,
+      "dur": 9.0,
       "side": "l",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 7,
       "kind": "table",
       "id": "e7_1",
-      "at": 267.08,
+      "at": 265.05,
       "dur": 12.0,
       "side": "r",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 7,
       "kind": "counter",
       "id": "e7_2",
-      "at": 288.63,
-      "dur": 7.34,
+      "at": 287.31,
+      "dur": 6.79,
       "side": "l",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
+    },
+    {
+      "block": 7,
+      "kind": "quote",
+      "id": "e7_3",
+      "at": 294.8,
+      "dur": 5.83,
+      "side": "l",
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 8,
       "kind": "scenario",
       "id": "e8_1",
-      "at": 303.56,
+      "at": 304.04,
       "dur": 12.0,
       "side": "r",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 8,
       "kind": "quote",
       "id": "e8_2",
-      "at": 331.38,
-      "dur": 6.0,
+      "at": 330.91,
+      "dur": 9.47,
       "side": "l",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 9,
       "kind": "scenario",
       "id": "e9_1",
-      "at": 342.65,
-      "dur": 11.0,
+      "at": 343.74,
+      "dur": 9.5,
       "side": "l",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 9,
       "kind": "funnel",
       "id": "e9_2",
-      "at": 354.35,
+      "at": 353.94,
       "dur": 11.0,
       "side": "r",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 10,
       "kind": "checklist",
       "id": "e10_1",
-      "at": 385.02,
-      "dur": 14.0,
+      "at": 383.51,
+      "dur": 12.8,
       "side": "r",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 10,
       "kind": "chips",
       "id": "e10_2",
-      "at": 399.72,
+      "at": 397.01,
       "dur": 9.0,
       "side": "l",
-      "anchored": false
-    },
-    {
-      "block": 11,
-      "kind": "steps",
-      "id": "e11_1",
-      "at": 433.33,
-      "dur": 11.0,
-      "side": "l",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 11,
       "kind": "miners",
-      "id": "e11_2",
-      "at": 445.03,
+      "id": "e11_1",
+      "at": 431.54,
       "dur": 11.0,
       "side": "r",
-      "anchored": true
+      "anchored": true,
+      "layout": "side",
+      "override": true
+    },
+    {
+      "block": 11,
+      "kind": "steps",
+      "id": "e11_2",
+      "at": 452.79,
+      "dur": 11.0,
+      "side": "l",
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 12,
       "kind": "quote",
       "id": "e12_1",
-      "at": 470.91,
+      "at": 471.01,
       "dur": 9.0,
       "side": "l",
-      "anchored": false
+      "anchored": true,
+      "layout": "side",
+      "override": true
     },
     {
       "block": 12,
       "kind": "outro",
       "id": "e12_2",
-      "at": 480.61,
-      "dur": 28.15,
+      "at": 496.31,
+      "dur": 9.62,
       "side": "r",
-      "anchored": false
+      "anchored": true,
+      "layout": "push",
+      "override": true
     }
   ],
-  "notes": [
-    "#6 quote: нет места в блоке, пропущено",
-    "#7 quote: нет места в блоке, пропущено"
-  ],
+  "notes": [],
   "author": {
     "name": "Дмитрий Царьков",
     "role": "управляющий активами"
-  }
+  },
+  "copy_source": "D:\\LLM\\video-montage-template\\script\\2026-10-15-крипта-inserts.json"
 }

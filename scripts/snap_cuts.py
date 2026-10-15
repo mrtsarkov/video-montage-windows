@@ -108,6 +108,9 @@ def main() -> int:
     ap.add_argument("--max-pause", type=float, default=0.30, help="pause longer than this is compressed")
     ap.add_argument("--keep-pause", type=float, default=0.12, help="pause kept after compression, s")
     ap.add_argument("--min-clip", type=float, default=0.25, help="drop clips shorter than this, s")
+    ap.add_argument("--tail-hold", type=float, default=0.0,
+                    help="keep this much footage after the last word, so the speech "
+                         "and a beat of silence survive before the end card")
     args = ap.parse_args()
 
     src = Path(args.source).resolve()
@@ -159,6 +162,13 @@ def main() -> int:
                 "reason": ("waveform onset/offset snap" if k == 0 else "continuation after pause trim")
                           + (f" (part {k + 1}/{len(cuts)})" if len(cuts) > 1 else ""),
             })
+
+    if args.tail_hold > 0 and out:
+        last = out[-1]
+        want = min(total, last["out"] + args.tail_hold)
+        if want > last["out"]:
+            last["out"] = round(want, 3)
+            last["reason"] += " + tail hold (let the closing words land)"
 
     Path(args.edl_out).write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     if args.data:

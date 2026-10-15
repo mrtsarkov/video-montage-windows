@@ -23,6 +23,7 @@ import re
 import subprocess
 import sys
 import tempfile
+from difflib import SequenceMatcher
 from pathlib import Path
 
 import numpy as np
@@ -339,11 +340,148 @@ def check_determinism(edit: Path) -> dict:
             "target": "no " + ", ".join(PROHIBITED)}
 
 
+def check_copy_quality(edit: Path) -> dict:
+    """No ellipsis, every card text measured against the width it has.
+
+    The first version finished a too-long line with "…", so cards looked like
+    someone forgot to finish typing. `insert_copy.py` measures with the real Inter
+    font and rewrites instead; this check fails if any ellipsis reaches the screen.
+    """
+    html = edit / "comp" / "index.html"
+    if not html.is_file():
+        return {"check": "copy_quality", "status": "SKIP", "measured": "no composition",
+                "target": "no ellipsis in any on-screen text"}
+    text = html.read_text(encoding="utf-8-sig")
+    body = re.sub(r"<style.*?</style>", "", text, flags=re.S)
+    body = re.sub(r"<script.*?</script>", "", body, flags=re.S)
+    nodes = [m.group(1).strip() for m in re.finditer(r">([^<>]+)<", body) if m.group(1).strip()]
+    bad = [n for n in nodes if "…" in n or n.endswith("...")]
+    fit = edit / "copy_fit.json"
+    fitted = 0
+    if fit.is_file():
+        try:
+            fitted = len(json.loads(fit.read_text(encoding="utf-8-sig")).get("fitted", []))
+        except json.JSONDecodeError:
+            fitted = 0
+    mark = edit / "script_plan.json"
+    source = "автогенерация"
+    copy_path = edit / "comp_plan.json"
+    if copy_path.is_file():
+        try:
+            src = json.loads(copy_path.read_text(encoding="utf-8-sig")).get("copy_source")
+            if src:
+                source = Path(src).name
+        except json.JSONDecodeError:
+            pass
+    measured = (f"{len(nodes)} text node(s), {len(bad)} with an ellipsis; "
+                f"{fitted} line(s) rewritten to fit; copy: {source}")
+    return {"check": "copy_quality", "status": "PASS" if not bad else "FAIL",
+            "measured": measured + ("; " + "; ".join(b[:48] for b in bad[:4]) if bad else ""),
+            "target": "0 ellipses on screen; long lines are rewritten, not cut short"}
+
+
+def check_retakes(edit: Path, window: int = 6, sim: float = 0.72) -> dict:
+    """Did any repeated or aborted phrase survive the cut?
+
+    Two neighbouring clips that say the same thing (or where the earlier one is a
+    prefix of the later) are a retake the editor missed.
+    """
+    edl = edl_of(edit)
+    if not edl:
+        return {"check": "retakes", "status": "SKIP", "measured": "no EDL",
+                "target": "no repeated or aborted phrase left in the cut"}
+    def norm(t):
+        t = t.lower().replace("ё", "е")
+        t = re.sub(r"[^\w\s-]", "", t, flags=re.UNICODE)
+        return re.sub(r"\s+", " ", t).strip()
+    hits = []
+    for i in range(len(edl)):
+        a = norm(edl[i].get("text") or "")
+        if len(a.split()) < 3:
+            continue
+        for j in range(i + 1, min(len(edl), i + window + 1)):
+            b = norm(edl[j].get("text") or "")
+            if len(b.split()) < 3:
+                continue
+            if a and b.startswith(a) and len(a) > 12:
+                hits.append((i + 1, j + 1, "префикс"))
+                continue
+            r = SequenceMatcher(None, a, b).ratio()
+            if r >= sim:
+                hits.append((i + 1, j + 1, f"{r:.2f}"))
+    # repeats inside one clip are a whisper decoding loop, not the speaker
+    return {"check": "retakes", "status": "PASS" if not hits else "FAIL",
+            "measured": (f"{len(edl)} clips checked; {len(hits)} duplicate pair(s) left"
+                         + (": " + ", ".join(f"#{a}/#{b} ({why})" for a, b, why in hits[:6])
+                            if hits else "")),
+            "target": "0 repeated or aborted phrases (build_edl.py + build_words_dtw.py remove them)"}
+
+
+def check_face_safe(edit: Path, data: Path | None = None, samples: int = 24) -> dict:
+    """Does any graphic land on the speaker's face?
+
+    The requirement is literal: an insert may sit beside the head or behind the
+    liquid-glass cover, never on the face. Cards are measured in the outer columns
+    and the two full-frame moments are declared as stage windows, so they are
+    exempt exactly while they are on screen.
+    """
+    layer = edit / "layer-front.mov"
+    if not layer.is_file():
+        return {"check": "face_safe", "status": "SKIP", "measured": "no layer-front.mov",
+                "target": "no graphic pixel inside the face box outside the glass stage"}
+    box = {"x": 39.0, "y": 30.0, "w": 27.0, "h": 38.0}
+    dp = data or (edit / "data.json")
+    if dp and Path(dp).is_file():
+        try:
+            got = (json.loads(Path(dp).read_text(encoding="utf-8-sig"))
+                   .get("passport", {}).get("face_box_pct"))
+            if got:
+                box = got
+        except json.JSONDecodeError:
+            pass
+    stage_path = edit / "stage.json"
+    windows = []
+    if stage_path.is_file():
+        try:
+            windows = json.loads(stage_path.read_text(encoding="utf-8-sig")).get("windows") or []
+        except json.JSONDecodeError:
+            windows = []
+    duration = float(ff(["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                         "-of", "csv=p=0", str(layer)]).strip() or 0.0)
+    if duration <= 0:
+        return {"check": "face_safe", "status": "SKIP", "measured": "undecodable layer",
+                "target": "no graphic pixel inside the face box outside the glass stage"}
+    x0, y0 = int(1920 * box["x"] / 100.0), int(1080 * box["y"] / 100.0)
+    x1, y1 = int(1920 * (box["x"] + box["w"]) / 100.0), int(1080 * (box["y"] + box["h"]) / 100.0)
+    bad, checked, exempt = [], 0, 0
+    for i in range(samples):
+        t = duration * (i + 0.5) / samples
+        if any(w["start"] <= t <= w["end"] for w in windows):
+            exempt += 1
+            continue
+        a = alpha_frame(layer, t, 1920, 1080)
+        if a is None:
+            continue
+        checked += 1
+        share = float((a[y0:y1, x0:x1] > 31).mean() * 100.0)
+        if share > 0.25:
+            bad.append(f"t={t:.1f}s {share:.1f}%")
+    return {"check": "face_safe",
+            "status": "PASS" if not bad else "FAIL",
+            "measured": (f"face box x{box['x']:.0f}% y{box['y']:.0f}% "
+                         f"{box['w']:.0f}×{box['h']:.0f}%; {checked} frame(s) measured, "
+                         f"{exempt} exempt (liquid-glass stage); "
+                         + (f"{len(bad)} frame(s) with graphics on the face: " + ", ".join(bad[:5])
+                            if bad else "no graphics on the face")),
+            "target": "0 frames with a graphic over the face outside the declared glass stage"}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("final")
     ap.add_argument("--edit", required=True)
     ap.add_argument("--source", default=None)
+    ap.add_argument("--data", default=None, help="data.json (face box and passport)")
     ap.add_argument("--json", default=None)
     ap.add_argument("--sheet-dir", default=None)
     args = ap.parse_args()
@@ -358,6 +496,9 @@ def main() -> int:
         check_jitter(edit),
         check_sfx_placement(edit),
         check_determinism(edit),
+        check_copy_quality(edit),
+        check_retakes(edit),
+        check_face_safe(edit, Path(args.data).resolve() if args.data else None),
     ]
     print("verify_extra.py - additional checks (§12)")
     print(f"file : {final}")

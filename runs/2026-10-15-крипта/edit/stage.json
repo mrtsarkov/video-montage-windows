@@ -1,0 +1,78 @@
+{
+  "windows": [
+    {
+      "start": 43.76,
+      "end": 45.76,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 85.15,
+      "end": 87.15,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 126.59,
+      "end": 128.59,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 169.95,
+      "end": 171.95,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 218.44,
+      "end": 220.44,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 261.73,
+      "end": 263.73,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 300.73,
+      "end": 302.73,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 340.48,
+      "end": 342.48,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 380.09,
+      "end": 382.09,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 422.07,
+      "end": 424.07,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 467.71,
+      "end": 469.71,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 496.06,
+      "end": 505.93,
+      "mode": "push",
+      "person": "left"
+    }
+  ],
+  "montage_s": 505.93,
+  "layer_s": 510.98
+}

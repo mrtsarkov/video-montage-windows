@@ -1,13 +1,13 @@
 {
-  "segments": 96,
-  "duration_s": 509.26,
+  "segments": 97,
+  "duration_s": 505.93,
   "threshold_rms": 0.01147,
-  "dead_air_total_s": 11.09,
+  "dead_air_total_s": 14.51,
   "dead_air_lead_median_s": 0.08,
   "dead_air_lead_max_s": 0.09,
   "dead_air_tail_median_s": 0.06,
-  "dead_air_tail_max_s": 0.06,
-  "cut_in_lands_on_speech": 13,
+  "dead_air_tail_max_s": 1.65,
+  "cut_in_lands_on_speech": 9,
   "cut_out_lands_on_speech": 13,
-  "internal_pauses_over_max": 60
+  "internal_pauses_over_max": 56
 }

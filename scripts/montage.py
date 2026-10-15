@@ -40,6 +40,9 @@ DEFAULT_PASSPORT = {
     "fonts": {"accent": "Inter Black", "text": "Inter"},
     "author": {"name": "Дмитрий Царьков", "role": "управляющий активами"},
     "subtitles": False,
+    # where the speaker's face sits in the frame, in % of the canvas: inserts are
+    # laid out in the outer columns and the face-safe check refuses to draw on it
+    "face_box_pct": {"x": 39.0, "y": 30.0, "w": 27.0, "h": 38.0},
 }
 BRAND_PATH = ROOT / "refs" / "brandbook" / "brand.json"
 
@@ -88,6 +91,8 @@ def run(cmd: list[str], cwd: Path | None = None, capture: bool = False) -> str:
         env.pop(key, None)
     env.setdefault("HYPERFRAMES_NO_TELEMETRY", "1")
     env.setdefault("DO_NOT_TRACK", "1")
+    # helper scripts print Cyrillic (and a multiplication sign); keep that out of cp1251
+    env.setdefault("PYTHONIOENCODING", "utf-8")
     proc = subprocess.run(cmd, cwd=str(cwd) if cwd else None, env=env,
                           text=True, capture_output=capture)
     if proc.returncode != 0:
@@ -201,8 +206,12 @@ class Pipeline:
             raise Fail(f"no transcript at {self.words}; run with --transcribe or pass --transcript")
         run([sys.executable, str(SCRIPTS / "build_edl.py"), str(self.words),
              str(self.edl), "--source", self.take.name], capture=True)
+        # --tail-hold keeps a beat of footage after the last word, so the closing
+        # line is never clipped and the end card has room
         run([sys.executable, str(SCRIPTS / "snap_cuts.py"), str(self.take),
-             str(self.edl), str(self.edl), "--data", str(self.edit / "data.json")], capture=True)
+             str(self.edl), str(self.edl), "--data", str(self.edit / "data.json"),
+             "--max-pause", "0.5", "--keep-pause", "0.16", "--tail-hold", "1.6"],
+            capture=True)
         out = run([sys.executable, str(SCRIPTS / "check_edl.py"), str(self.take), str(self.edl),
                    "--json", str(self.edit / "check_edl.json")], capture=True)
         for line in out.strip().splitlines():
@@ -342,6 +351,7 @@ class Pipeline:
     def stage_verify_extra(self) -> None:
         cmd = [sys.executable, str(SCRIPTS / "verify_extra.py"), str(self.final),
                "--edit", str(self.edit), "--source", str(self.take),
+               "--data", str(self.edit / "data.json"),
                "--json", str(self.edit / "verify_extra.json")]
         out = run(cmd, capture=True)
         for line in out.strip().splitlines()[-3:]:
@@ -358,12 +368,17 @@ class Pipeline:
         log(f"report: {self.report}")
 
     def stage_transcribe(self) -> None:
-        ps = ROOT / "tools" / "transcribe.ps1"
-        run(["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(ps),
-             "-Take", str(self.take), "-OutDir", str(self.edit / "transcripts")], capture=True)
+        """Word-level transcript with DTW timestamps.
+
+        whisper.cpp needs `-nfa` here: flash attention silently disables DTW, and
+        without DTW a whole phrase collapses onto one "word" (see build_words_dtw.py).
+        """
+        out = run([sys.executable, str(SCRIPTS / "build_words_dtw.py"), str(self.take),
+                   str(self.words)], capture=True)
+        for line in out.strip().splitlines():
+            log(line)
         if not self.words.exists():
             raise Fail(f"transcription produced no {self.words.name}")
-        log(f"transcript: {self.words.name}")
 
 
 def _sfx_report_lines(pl: "Pipeline") -> list[str]:
@@ -544,7 +559,9 @@ STAGES = [
     ("edl", "stage_edl", ["edl.json", "check_edl.json"], ["transcripts"]),
     ("script_plan", "stage_script_plan", ["script_plan.json"], ["edl.json", "transcripts"]),
     ("voice", "stage_voice", ["voice.wav"], ["edl.json"]),
-    ("comp", "stage_comp", ["comp/index.html"], ["edl.json", "data.json"]),
+    ("comp", "stage_comp", ["comp/index.html", "comp_plan.json", "stage.json",
+                            "timeline.json", "graphics_plan.md"],
+     ["edl.json", "data.json"]),
     ("check", "stage_check", ["check.log"], ["comp/index.html"]),
     ("plate", "stage_plate", ["plate.mp4"], ["edl.json", "data.json"]),
     ("back_comp", "stage_back_comp", ["comp-back/index.html", "back_layer.json"],
@@ -558,7 +575,7 @@ STAGES = [
      ["voice.wav", "comp/index.html", "graphics_plan.md"]),
     ("final", "stage_final", ["../out/final.mp4"],
      ["layer-front.mov", "layer-back.mov", "person-mask.mov", "back_layer.json",
-      "voice.wav", "edl.json", "sfx_plan.json"]),
+      "voice.wav", "edl.json", "sfx_plan.json", "stage.json", "timeline.json"]),
     ("verify", "stage_verify", ["verify.json"], ["../out/final.mp4"]),
     ("verify_extra", "stage_verify_extra", ["verify_extra.json"], ["../out/final.mp4"]),
     ("report", "stage_report", ["report.md"], ["verify.json"]),

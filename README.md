@@ -16,52 +16,72 @@ cd video-montage-windows
 
 Подробнее: [DEPLOY.md](DEPLOY.md)
 
-## Быстрый старт
+## Одна команда: из дубля в готовый ролик
 
-1. **Скопируйте** эту папку в место проекта (или работайте прямо здесь).
-2. Положите сырые дубли в `takes/` (опционально: `fonts/`, `sfx/`, `logos/`, `script.txt`, `refs/`).
-3. Проверьте окружение:
+```powershell
+cd D:\LLM\video-montage-template
 
-   ```powershell
-   .\tools\check-env.ps1
-   ```
+# графика рисуется из сценария съёмки (по блокам и B-roll каждого блока)
+py -3 scripts\montage.py --label 2026-10-15-крипта `
+    --take "takes\2026-10-15 13-54-01.mp4" --script "script\2026-10-15-крипта.md"
 
-4. Инициализируйте прогон (создаст `runs/<метка>/edit/` и `runs/<метка>/out/`):
+# без сценария — эвристика по триггерным словам расшифровки
+py -3 scripts\montage.py --label v4 --take "takes\НОВЫЙ-ДУБЛЬ.mp4" --transcribe
+```
 
-   ```powershell
-   .\tools\init-run.ps1 -Label cursor
-   ```
+Стадии с `--script`: `env → edl → script_plan → voice → comp → check → render → sfx →
+final → verify → verify_extra → report`. Каждая стадия пропускается, если её выходы
+новее входов. `--force all`, `--only <стадия>`, `--from <стадия>`, `--allow-fail`.
 
-5. Откройте папку проекта в Cursor и вставьте **весь** `MONTAGE-PROMPT-v4.md` (+ при желании `PROJECT-CONFIG.md`) как задачу агенту.
+Результат: `runs/<метка>/out/final.mp4` и отчёт `runs/<метка>/edit/report.md` (§13).
 
-6. Пробная сборка окружения (2 сек, §3.7):
+Подробности и цифры последнего прогона: [RESUME-v2.md](RESUME-v2.md).
 
-   ```powershell
-   .\tools\probe-trial.ps1 -RunLabel cursor
-   ```
+## Съёмка: чтобы глаза смотрели в объектив
+
+```powershell
+py -3 scripts\build_teleprompter.py "script\2026-10-15-крипта.md" runs\teleprompter.html --eyeline
+py -3 scripts\check_eyeline.py "takes\2026-10-15 13-54-01.mp4"
+```
+
+`--eyeline` паркует строку чтения на высоте объектива (вебка сверху ≈ 9 % высоты) и
+сужает колонку; `check_eyeline.py` измеряет, куда реально ушёл взгляд, и возвращает
+вердикт `OK` / `GAZE DOWN`. Подробно: [docs/EYELINE.md](docs/EYELINE.md).
+
+## Тексты в кадре
+
+Вставки собираются из сценария, служебная разметка (`#N`, `Хук:`, `CTA`,
+`🎞 B-roll:`) в кадр не попадает, а строки измеряются настоящим Inter и
+переписываются, если не влезают — многоточия в кадре не бывает. Для конкретного
+ролика тексты можно доводить руками: `script/<метка>-inserts.json`.
+Подробно: [docs/INSERT-COPY.md](docs/INSERT-COPY.md).
 
 ## Структура
 
 ```
 takes/          — сырые дубли (не трогать агентом)
+script/         — сценарии съёмки (#NЗаголовок~50 сек + 🎞 B-roll) и тексты вставок
 fonts/          — локальные шрифты (опционально)
 sfx/            — звуки (опционально)
 logos/          — логотипы (опционально)
-script.txt      — текст ролика (опционально)
-refs/           — референсы стиля (опционально)
+refs/           — брендбук и референсы стиля
 runs/<метка>/
-  edit/         — пульт data.json, EDL, планы (субтитры выключены)
+  edit/         — пульт data.json, EDL, планы, композиция, слои (субтитры выключены)
   out/          — final.mp4
 tools/          — PowerShell-раннеры
-scripts/        — Python (EDL, графика, sfx, замеры текста)
+scripts/        — Python (расшифровка, EDL, графика, sfx, приёмка, замеры)
+docs/           — тексты вставок, линия взгляда
 ```
 
-## Переменные окружения (монтаж)
+## Полезные команды
 
-```powershell
-$env:HYPERFRAMES_NO_TELEMETRY = "1"
-$env:DO_NOT_TRACK = "1"
-```
+| Задача | Команда |
+|--------|---------|
+| Опись дублей | `.\tools\scan-takes.ps1` |
+| Расшифровка с DTW-таймингами слов | `py -3 scripts\build_words_dtw.py take.mp4 out-words.json` |
+| Проверка линии взгляда | `py -3 scripts\check_eyeline.py takes\take.mp4` |
+| Суфлёр на линии объектива | `py -3 scripts\build_teleprompter.py script.md out.html --eyeline` |
+| Каталог sfx | `py -3 scripts\sfx_catalog.py sfx\` |
 
 ## Whisper-модель (русская расшифровка)
 

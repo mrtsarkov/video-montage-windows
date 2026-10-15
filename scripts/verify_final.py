@@ -504,13 +504,16 @@ def check_video(probe, args, edl_state):
     else:
         delta = None if duration is None else duration - edl_dur
         ok = delta is not None and abs(delta) <= EDL_DUR_TOL_S
+        src = edl_state.get("source")
+        basis = ("timeline.json total (footage "
+                 f"{fmt(edl_state.get('footage_s'))} s + end card)") if src else "EDL sum"
         details.append(
             Check(
                 "duration",
                 PASS if ok else FAIL,
-                f"{fmt(duration)} s vs EDL {fmt(edl_dur)} s "
+                f"{fmt(duration)} s vs {basis} {fmt(edl_dur)} s "
                 f"({edl_state.get('segments', 0)} segments, delta {fmt_signed(delta)} s)",
-                f"EDL sum +- {EDL_DUR_TOL_S:.2f} s",
+                f"timeline sum +- {EDL_DUR_TOL_S:.2f} s",
             )
         )
 
@@ -1014,6 +1017,21 @@ def main(argv=None):
                 edl_state["status"] = "unreadable"
 
     checks = []
+    # When the graphics layer runs past the footage (the brand end card plays over
+    # the frozen last frame), the deliverable's length is the timeline total, which
+    # build_final.py records in timeline.json. Without that file the EDL sum is used.
+    if edit is not None and edl_state.get("status") == "ok":
+        tl_path = edit / "timeline.json"
+        if tl_path.is_file():
+            try:
+                tl = json.loads(tl_path.read_text(encoding="utf-8-sig"))
+                if tl.get("total_s"):
+                    edl_state = {"status": "ok", "duration": float(tl["total_s"]),
+                                 "segments": edl_state.get("segments", 0),
+                                 "source": "timeline.json",
+                                 "footage_s": float(tl.get("montage_s") or 0.0)}
+            except (json.JSONDecodeError, TypeError, ValueError, OSError):
+                pass
     try:
         checks.append(check_video(probe, args, edl_state))
         checks.append(check_color_tags(probe))

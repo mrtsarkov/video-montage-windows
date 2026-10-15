@@ -1,0 +1,34 @@
+{
+  "fitted": [
+    {
+      "where": "e5_2.cl0",
+      "how": 2,
+      "before": "BTC-ETF",
+      "after": "BTC"
+    },
+    {
+      "where": "e5_2.cl1",
+      "how": 2,
+      "before": "ETH-ETF",
+      "after": "ETH"
+    },
+    {
+      "where": "e5_2.cl2",
+      "how": 2,
+      "before": "BlackRock ETHA",
+      "after": "ETHA"
+    },
+    {
+      "where": "e5_2.cl3",
+      "how": 2,
+      "before": "Grayscale Mini",
+      "after": "Mini"
+    },
+    {
+      "where": "e9_2.f1",
+      "how": 3,
+      "before": "крупные игроки",
+      "after": "крупные игроки"
+    }
+  ]
+}

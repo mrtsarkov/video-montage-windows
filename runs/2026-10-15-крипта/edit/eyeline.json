@@ -1,0 +1,94 @@
+{
+  "take": "D:\\LLM\\video-montage-template\\takes\\2026-10-15 13-54-01.mp4",
+  "frames": [
+    {
+      "reflection_y_pct": 42.84,
+      "eye_y_pct": 32.98,
+      "offset_pct": 9.86,
+      "violet_share_pct": 1.4,
+      "reflection_x_pct": 52.34
+    },
+    {
+      "reflection_y_pct": 46.35,
+      "eye_y_pct": 35.49,
+      "offset_pct": 10.86,
+      "violet_share_pct": 1.63,
+      "reflection_x_pct": 51.56
+    },
+    {
+      "reflection_y_pct": 42.65,
+      "eye_y_pct": 32.7,
+      "offset_pct": 9.96,
+      "violet_share_pct": 0.61,
+      "reflection_x_pct": 53.05
+    },
+    {
+      "reflection_y_pct": 46.09,
+      "eye_y_pct": 35.36,
+      "offset_pct": 10.74,
+      "violet_share_pct": 1.57,
+      "reflection_x_pct": 51.16
+    },
+    {
+      "reflection_y_pct": 44.89,
+      "eye_y_pct": 34.72,
+      "offset_pct": 10.16,
+      "violet_share_pct": 1.27,
+      "reflection_x_pct": 51.96
+    },
+    {
+      "reflection_y_pct": 47.08,
+      "eye_y_pct": 37.54,
+      "offset_pct": 9.54,
+      "violet_share_pct": 1.35,
+      "reflection_x_pct": 50.91
+    },
+    {
+      "reflection_y_pct": 48.2,
+      "eye_y_pct": 37.94,
+      "offset_pct": 10.25,
+      "violet_share_pct": 1.41,
+      "reflection_x_pct": 51.32
+    },
+    {
+      "reflection_y_pct": 48.64,
+      "eye_y_pct": 39.58,
+      "offset_pct": 9.06,
+      "violet_share_pct": 1.15,
+      "reflection_x_pct": 50.93
+    },
+    {
+      "reflection_y_pct": 48.94,
+      "eye_y_pct": 39.3,
+      "offset_pct": 9.65,
+      "violet_share_pct": 1.27,
+      "reflection_x_pct": 51.4
+    },
+    {
+      "reflection_y_pct": 47.66,
+      "eye_y_pct": 37.85,
+      "offset_pct": 9.81,
+      "violet_share_pct": 1.53,
+      "reflection_x_pct": 51.3
+    },
+    {
+      "reflection_y_pct": 47.51,
+      "eye_y_pct": 37.63,
+      "offset_pct": 9.88,
+      "violet_share_pct": 1.38,
+      "reflection_x_pct": 51.56
+    },
+    {
+      "reflection_y_pct": 48.07,
+      "eye_y_pct": 38.35,
+      "offset_pct": 9.72,
+      "violet_share_pct": 1.35,
+      "reflection_x_pct": 51.88
+    }
+  ],
+  "mean_offset_pct": 9.96,
+  "reflection_y_pct": 46.58,
+  "eye_y_pct": 36.62,
+  "lens_percent": 9.0,
+  "verdict": "GAZE DOWN"
+}
