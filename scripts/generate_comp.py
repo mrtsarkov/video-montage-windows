@@ -296,7 +296,9 @@ html,body {{ margin:0; width:1920px; height:1080px; overflow:hidden; background:
     text-shadow:0 6px 24px rgba(0,0,0,.18); opacity:0;
   }}
   .lower-third {{
-    position:absolute; left:5%; bottom:7.5%; padding:18px 26px 18px 22px; opacity:0;
+    /* bottom 14%, not 7.5%: the soft shadow must stay inside the 7% frame margin (§9.3).
+       At 12% the shadow lands on 7.4% — too close to the limit to risk a failed render. */
+    position:absolute; left:5%; bottom:14%; padding:18px 26px 18px 22px; opacity:0;
     border-left:6px solid {c['accent1']};
   }}
   .lower-third .lt-name {{ font:800 40px/1.15 'Inter',sans-serif; color:{c['ink']}; letter-spacing:-.02em; }}

@@ -11,15 +11,15 @@
 |---|---|---|---|
 | video | PASS | h264 / yuv420p / 1920x1080 / 30.000 fps / duration 336.933 s | h264 / yuv420p / 1920x1080 / 30 fps / duration = EDL sum +- 0.15 s |
 | color_tags | PASS | color_range=tv / color_space=bt709 / color_primaries=bt709 / color_trc=bt709 | tv / bt709 / bt709 / bt709 (all four tags mandatory) |
-| bitrate | PASS | 20.03 Mbps | >= 16 Mbps (target ~30 Mbps) |
+| bitrate | PASS | 20.04 Mbps | >= 16 Mbps (target ~30 Mbps) |
 | audio | PASS | aac / -14.20 LUFS / true peak -2.20 dBTP | aac / -14 LUFS +- 0.5 LU / true peak <= -0.85 dBTP |
 | subtitles | PASS | comp/index.html: 0x class="subs", 0x class="sub clip"; edit/subtitles.json: absent | no class="subs", no class="sub clip", no edit/subtitles.json (spec sec. 5) |
-| layer_alpha | PASS | empty 70/84 frames; visible 14/84 frames; min margins 5.00/5.00/13.98/60.83 % | >= 1 empty frame (max alpha == 0); graphics present (max alpha > 0.12); opaque bbox >= 3.5% of width and >= 7% of height from the edges |
+| layer_alpha | PASS | empty 69/84 frames; visible 15/84 frames; min margins 5.00/5.00/13.98/12.87 % | >= 1 empty frame (max alpha == 0); graphics present (max alpha > 0.12); opaque bbox >= 3.5% of width and >= 7% of height from the edges |
 | black_frames | PASS | first_frame mean luma 178.37/255; last_frame mean luma 181.01/255 | first and last frame mean luma > 8/255 |
 | source | PASS | readable: D:\LLM\video-montage-template\takes\2026-05-28 13-20-36.mp4; duration: source 384.900 s vs final 336.933 s; color_tags: source and final tags agree (or source tags are unset) | readable; source duration >= final duration; colour tags consistent |
 | frame_sheet | PASS | 8/8 stills in frames/ | one still per graphics element, after it settled |
 | audio_sync | PASS | lag +0.00 ms (correlation 1.0000) | |lag| <= 5.0 ms |
-| levels | PASS | paired on 27 EDL frames: source 0.98% -> final 0.98% clipped at 255 (grade adds +0.01 pp); p50 98-252; mean luma change 2.91/255 | grade adds <= 0.3 pp of clipping |
+| levels | PASS | paired on 27 EDL frames: source 0.98% -> final 0.99% clipped at 255 (grade adds +0.01 pp); p50 98-252; mean luma change 2.95/255 | grade adds <= 0.3 pp of clipping |
 | jitter | PASS | max centroid drift 0.000 px/frame per element (4 element(s), ) | <= 0.25 px/frame on hold |
 | sfx_placement | PASS | 15/15 events raise the level (median +3.3 dB) | each planned event louder than the voice-only track in its window |
 | determinism | PASS | no infinite animation, no random/time source; 8 deterministic tl.call steps | no infinite, Math.random, Date.now, performance.now |

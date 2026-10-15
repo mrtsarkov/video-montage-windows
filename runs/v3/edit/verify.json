@@ -95,14 +95,14 @@
     {
       "check": "bitrate",
       "status": "PASS",
-      "measured": "20.03 Mbps",
+      "measured": "20.04 Mbps",
       "target": ">= 16 Mbps (target ~30 Mbps)",
       "note": "",
       "details": [
         {
           "check": "video bitrate",
           "status": "PASS",
-          "measured": "20.03 Mbps (ffprobe stream bit_rate)",
+          "measured": "20.04 Mbps (ffprobe stream bit_rate)",
           "target": ">= 16 Mbps",
           "note": ""
         }
@@ -164,7 +164,7 @@
     {
       "check": "layer_alpha",
       "status": "PASS",
-      "measured": "empty 70/84 frames; visible 14/84 frames; min margins 5.00/5.00/13.98/60.83 %",
+      "measured": "empty 69/84 frames; visible 15/84 frames; min margins 5.00/5.00/13.98/12.87 %",
       "target": ">= 1 empty frame (max alpha == 0); graphics present (max alpha > 0.12); opaque bbox >= 3.5% of width and >= 7% of height from the edges",
       "note": "no data-layout-allow-occlusion element found in comp/index.html",
       "details": [
@@ -185,21 +185,21 @@
         {
           "check": "empty_frames",
           "status": "PASS",
-          "measured": "70/84 frames with max(alpha) == 0",
+          "measured": "69/84 frames with max(alpha) == 0",
           "target": ">= 1 (alpha is 0 outside the graphics)",
           "note": ""
         },
         {
           "check": "graphics_present",
           "status": "PASS",
-          "measured": "14/84 frames with max(alpha) > 0.12",
+          "measured": "15/84 frames with max(alpha) > 0.12",
           "target": ">= 1 frame with max(alpha) > 0.12",
           "note": ""
         },
         {
           "check": "frame_margins",
           "status": "PASS",
-          "measured": "min margins L/R/T/B = 5.00/5.00/13.98/60.83 % of frame; 0 violating frames",
+          "measured": "min margins L/R/T/B = 5.00/5.00/13.98/12.87 % of frame; 0 violating frames",
           "target": ">= 3.5% of width, >= 7% of height",
           "note": ""
         }

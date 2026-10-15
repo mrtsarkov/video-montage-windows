@@ -5,7 +5,7 @@
     {
       "stage": "env",
       "status": "ok",
-      "seconds": 0.7
+      "seconds": 0.8
     },
     {
       "stage": "edl",
@@ -21,7 +21,8 @@
     },
     {
       "stage": "check",
-      "status": "skipped"
+      "status": "ok",
+      "seconds": 8.8
     },
     {
       "stage": "plate",
@@ -37,7 +38,8 @@
     },
     {
       "stage": "render",
-      "status": "skipped"
+      "status": "ok",
+      "seconds": 693.8
     },
     {
       "stage": "render_back",
@@ -53,20 +55,24 @@
     },
     {
       "stage": "final",
-      "status": "skipped"
+      "status": "ok",
+      "seconds": 346.4
     },
     {
       "stage": "verify",
-      "status": "skipped"
+      "status": "ok",
+      "seconds": 15.8
     },
     {
       "stage": "verify_extra",
-      "status": "skipped"
+      "status": "ok",
+      "seconds": 32.6
     },
     {
       "stage": "report",
-      "status": "skipped"
+      "status": "ok",
+      "seconds": 0.0
     }
   ],
-  "total_seconds": 0.7
+  "total_seconds": 1098.2
 }

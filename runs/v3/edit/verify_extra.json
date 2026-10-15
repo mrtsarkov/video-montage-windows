@@ -15,7 +15,7 @@
     {
       "check": "levels",
       "status": "PASS",
-      "measured": "paired on 27 EDL frames: source 0.98% -> final 0.98% clipped at 255 (grade adds +0.01 pp); p50 98-252; mean luma change 2.91/255",
+      "measured": "paired on 27 EDL frames: source 0.98% -> final 0.99% clipped at 255 (grade adds +0.01 pp); p50 98-252; mean luma change 2.95/255",
       "target": "grade adds <= 0.3 pp of clipping"
     },
     {
