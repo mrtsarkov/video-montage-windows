@@ -182,6 +182,16 @@ __GUIDES__
     render();
   }
 
+  // пересобрать раскладку и вернуть на линию чтения тот же блок: после смены
+  // ширины окна или загрузки шрифта строки разбиваются иначе, и «продолжить
+  // с того же места» уезжает на несколько строк
+  function realign() {
+    if (!paused) { reflow(true); return; }
+    var idx = currentBlock();
+    reflow(true);
+    jumpToBlock(idx);
+  }
+
   function setSize(next, persist) {
     next = clamp(Math.round(next), MIN, MAX);
     if (next === size) return;
@@ -304,7 +314,7 @@ __GUIDES__
     addEventListener(ev, wakeChrome, { passive: true });
   });
 
-  addEventListener('resize', function () { reflow(true); });
+  addEventListener('resize', function () { realign(); });
 
   // исходный кегль: ?size=NN → из localStorage → из сборки
   var qs = parseInt(query('size'), 10);
@@ -332,8 +342,7 @@ __GUIDES__
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(function () {
       if (!started) { boot(); return; }
-      reflow(true);
-      if (jumpIdx !== null) jumpToBlock(jumpIdx);
+      realign();
     }, function () { boot(); });
     setTimeout(boot, 900);
   } else {
