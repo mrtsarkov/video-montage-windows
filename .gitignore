@@ -3,6 +3,8 @@
 !/takes/.gitkeep
 
 # --- Render artifacts & intermediates ---
+/runs/_inspect-*/
+
 /runs/**/*.mp4
 /runs/**/*.mov
 /runs/**/*.wav

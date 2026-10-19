@@ -1205,6 +1205,35 @@ EXTRA_INSERTS = {
 }
 EXTRA_FIRST = {12}
 
+# kinds placed by their own code paths, never as a free-standing card
+SPECIAL_KINDS = {"title", "divider", "endcard"}
+
+
+def curated_insert_specs(block_override: dict) -> list[dict]:
+    """Inserts authored in `script/<label>-inserts.json` with `"_mode": "curated"`.
+
+    The author file drives the plan: each card says what it is, which side it sits
+    on and, through `anchor`, which spoken phrase opens it. What the card *says*
+    still comes from the same content builders, so the fit / no-ellipsis gate keeps
+    working. Without this mode the plan is derived from the B-roll marks, which is
+    tuned to the script it was written for.
+    """
+    out: list[dict] = []
+    for item in block_override.get("inserts") or []:
+        kind = item.get("kind")
+        if not kind or kind in SPECIAL_KINDS:
+            continue
+        out.append({
+            "kind": kind,
+            "marks": [("phrase", item["anchor"])] if item.get("anchor") else [],
+            "side": item.get("side") or "r",
+            "dur": float(item.get("dur") or HOLD_FLOOR.get(kind, 11.0)),
+            "primary": True,
+            "force_last": bool(item.get("force_last")),
+        })
+    return out
+
+
 # counters that need a value from the script (label, value, unit)
 COUNTERS = {7: ("Доля акций Cerebras", "9,02", "%")}
 
@@ -1537,6 +1566,7 @@ def build(label: str, edit: Path, json_out: Path | None = None,
         candidate = ROOT / "script" / f"{label}-inserts.json"
         copy_path = candidate if candidate.is_file() else None
     ce = CopyEngine(brand, copy_path)
+    curated_mode = ((ce.overrides or {}).get("_mode") == "curated")
 
     blocks = sorted([b for b in plan["blocks"] if b.get("timeline_first_word_s") is not None],
                     key=lambda b: b["timeline_first_word_s"])
@@ -1593,7 +1623,8 @@ def build(label: str, edit: Path, json_out: Path | None = None,
     for i, b in enumerate(blocks):
         counters: dict[str, int] = {}
         prepared = []
-        for spec in block_inserts(b):
+        for spec in (curated_insert_specs(ce.block_override(b)) if curated_mode
+                     else block_inserts(b)):
             kind = spec["kind"]
             idx = counters.get(kind, 0)
             counters[kind] = idx + 1

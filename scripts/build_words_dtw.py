@@ -76,8 +76,9 @@ def _same(a: str, b: str) -> bool:
 
 def _timed_ratio(words: list[dict], start: int, n: int) -> float:
     """How much of a copy carries real timestamps (a whisper loop carries none)."""
-    spans = [words[k]["end"] - words[k]["start"] for k in range(start, start + n)]
-    return sum(1 for s in spans if s >= 0.05) / max(1, len(spans))
+    idx = range(start, min(start + n, len(words)))
+    spans = [words[k]["end"] - words[k]["start"] for k in idx]
+    return sum(1 for s in spans if s >= 0.05) / max(1, n)
 
 
 def clean_repeats(words: list[dict], min_n: int = 3, max_n: int = 12,
@@ -109,6 +110,8 @@ def clean_repeats(words: list[dict], min_n: int = 3, max_n: int = 12,
                     continue
                 hit = None
                 for j in range(i + n, min(len(toks), i + n + lookahead)):
+                    if j + n > len(toks):
+                        continue
                     if all(_same(x, y) for x, y in zip(pat, toks[j:j + n])):
                         hit = j
                         break
