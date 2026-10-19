@@ -1,0 +1,84 @@
+{
+  "windows": [
+    {
+      "start": 42.54,
+      "end": 44.54,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 79.75,
+      "end": 81.75,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 122.27,
+      "end": 124.27,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 173.47,
+      "end": 175.47,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 212.93,
+      "end": 214.93,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 263.49,
+      "end": 265.49,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 304.67,
+      "end": 306.67,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 348.65,
+      "end": 350.65,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 391.95,
+      "end": 393.95,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 431.33,
+      "end": 433.33,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 468.59,
+      "end": 470.59,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 479.88,
+      "end": 480.73,
+      "mode": "glass",
+      "person": "left"
+    },
+    {
+      "start": 480.18,
+      "end": 502.21,
+      "mode": "push",
+      "person": "left"
+    }
+  ],
+  "montage_s": 502.21,
+  "layer_s": 507.26
+}

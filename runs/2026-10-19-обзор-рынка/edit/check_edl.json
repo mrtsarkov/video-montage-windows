@@ -1,0 +1,13 @@
+{
+  "segments": 134,
+  "duration_s": 502.21,
+  "threshold_rms": 0.00428,
+  "dead_air_total_s": 19.81,
+  "dead_air_lead_median_s": 0.08,
+  "dead_air_lead_max_s": 0.09,
+  "dead_air_tail_median_s": 0.06,
+  "dead_air_tail_max_s": 1.41,
+  "cut_in_lands_on_speech": 10,
+  "cut_out_lands_on_speech": 13,
+  "internal_pauses_over_max": 48
+}

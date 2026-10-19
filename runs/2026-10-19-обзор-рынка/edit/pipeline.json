@@ -1,0 +1,64 @@
+{
+  "label": "2026-10-19-обзор-рынка",
+  "take": "D:\\LLM\\video-montage-template\\takes\\2026-10-19 13-33-11.mp4",
+  "script": "D:\\LLM\\video-montage-template\\script\\2026-10-19-обзор-рынка.md",
+  "stages": [
+    {
+      "stage": "env",
+      "status": "ok",
+      "seconds": 1.3
+    },
+    {
+      "stage": "edl",
+      "status": "skipped"
+    },
+    {
+      "stage": "script_plan",
+      "status": "skipped"
+    },
+    {
+      "stage": "voice",
+      "status": "skipped"
+    },
+    {
+      "stage": "comp",
+      "status": "skipped"
+    },
+    {
+      "stage": "check",
+      "status": "ok",
+      "seconds": 17.7
+    },
+    {
+      "stage": "render",
+      "status": "ok",
+      "seconds": 738.2
+    },
+    {
+      "stage": "sfx",
+      "status": "ok",
+      "seconds": 0.4
+    },
+    {
+      "stage": "final",
+      "status": "ok",
+      "seconds": 621.5
+    },
+    {
+      "stage": "verify",
+      "status": "ok",
+      "seconds": 15.5
+    },
+    {
+      "stage": "verify_extra",
+      "status": "ok",
+      "seconds": 32.9
+    },
+    {
+      "stage": "report",
+      "status": "ok",
+      "seconds": 0.1
+    }
+  ],
+  "total_seconds": 1427.5
+}

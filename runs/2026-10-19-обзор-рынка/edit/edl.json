@@ -1,0 +1,940 @@
+[
+  {
+    "text": "Биткоин закрывает неделю на 82 671 доллара, плюс 1,3% за сутки. При этом спотовые биткоины ТФ за две недели потеряли почти миллиард, минус 681 миллион долларов. Недели ранее еще минус 228 миллиона за 12-16 октября.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 7.68,
+    "out": 13.57,
+    "reason": "waveform onset/offset snap (part 1/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 13.94,
+    "out": 20.25,
+    "reason": "continuation after pause trim (part 2/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 20.63,
+    "out": 25.01,
+    "reason": "continuation after pause trim (part 3/3)"
+  },
+  {
+    "text": "Цена стоит, а институциональный поток уходит. Это не противоречие, а два разных горизонта.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 25.73,
+    "out": 31.12,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Первый– краткосрочная торговля, где рынок собрал миллиард долларов ликвидации за одну сессию 15 октября.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 30.97,
+    "out": 36.59,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Второй– это распределение капитала, где фонды сокращают позицию. Эфир на 2430 долларов, плюс 1%, ну а спай– минус 1%.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 37.03,
+    "out": 46.74,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Разберем, что произошло за неделю, какие разводки прошли и что ждет рынок до конца октября.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 47.22,
+    "out": 52.51,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Внутри недели биткоин прошел полный цикл.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 55.13,
+    "out": 57.24,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "15 октября в 16.54 по Москве цена опускалась до 80 тысяч долларов, ниже круглой отметки.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 57.69,
+    "out": 62.77,
+    "reason": "waveform onset/offset snap (part 1/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 63.13,
+    "out": 64.33,
+    "reason": "continuation after pause trim (part 2/3)"
+  },
+  {
+    "text": "Через 49 минут вернулась к 81 568 долларам.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 64.85,
+    "out": 65.96,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 67.59,
+    "out": 71.99,
+    "reason": "continuation after pause trim (part 2/2)"
+  },
+  {
+    "text": "К 16 октября отскочила к 82 500 долларам.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 72.57,
+    "out": 73.47,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 74.85,
+    "out": 78.14,
+    "reason": "continuation after pause trim (part 2/2)"
+  },
+  {
+    "text": "Трейдеры за сутки потеряли около 1 миллиарда долларов на ликвидации. Амплитуда движения примерно 3% за 2 часа. Это не тренд, это вынос стопов. Собирайся.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 78.85,
+    "out": 82.34,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 82.92,
+    "out": 88.25,
+    "reason": "continuation after pause trim (part 2/2)"
+  },
+  {
+    "text": "В таких условиях решение принимается не по свече, а по структуре позиции. Размер, плечо, точка выхода.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 87.78,
+    "out": 88.27,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 88.76,
+    "out": 94.35,
+    "reason": "continuation after pause trim (part 2/2)"
+  },
+  {
+    "text": "Дальше по неделе были инфляция, разводки и регуляторика.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 94.85,
+    "out": 98.11,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Идем по порядку.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 101.3,
+    "out": 102.26,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "15 октября вышел отчет по потребительской инфляции в США.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 106.07,
+    "out": 108.18,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 110.27,
+    "out": 114.58,
+    "reason": "continuation after pause trim (part 2/2)"
+  },
+  {
+    "text": "До публикации биткоин держался в диапазоне 80%.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 115.19,
+    "out": 117.63,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Снижение цен на составляет 22 тысячи и 84 тысячи долларов.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 117.32,
+    "out": 121.02,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "После ушел ниже.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 120.86,
+    "out": 122.07,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Аналитики заранее называли этот фактор тормозом для роста.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 122.63,
+    "out": 125.39,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "16 октября Кевин Уорш выступил на конференции и не дал сигналов по ставке.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 125.98,
+    "out": 131.86,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Только повтор про ценовую стабильность. Рынок оценивает вероятность повышения ставки 28 октября на следующей неделе всего в 12,7%.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 131.64,
+    "out": 133.51,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 133.91,
+    "out": 140.04,
+    "reason": "continuation after pause trim (part 2/2)"
+  },
+  {
+    "text": "Базовый сценарий на сегодня– это пауза. Для капитала это значит, что макроэкономический ветер нейтрален на движение цены, который будет задавать не ставка, а поток средств в ETF. И здесь картина хуже, чем кажется на первый взгляд.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 140.47,
+    "out": 142.63,
+    "reason": "waveform onset/offset snap (part 1/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 143.09,
+    "out": 150.55,
+    "reason": "continuation after pause trim (part 2/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 150.96,
+    "out": 153.45,
+    "reason": "continuation after pause trim (part 3/3)"
+  },
+  {
+    "text": "Прошлая неделя была одной из самых тяжелых по токеномике.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 156.96,
+    "out": 159.87,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "12 октября Double Zero разблокировала около 1,655,000,000 токенов.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 160.33,
+    "out": 166.08,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Это 47% обращения сегодня.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 166.99,
+    "out": 170.53,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "13 октября S&M вывела примерно 1,4 миллиарда токенов для инвесторов.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 171.15,
+    "out": 175.89,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "В графике были Клифф. Без блокировки Hype, SUI, ARP и ZERO.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 176.33,
+    "out": 180.99,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Всего на неделю разблоки прошли у 18 алькоинов. Суммарная оценка по 32 активам– более 1,913,000,000,000 долларов. Данные токеномистов по данным токеномистов от 4 октября.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 182.19,
+    "out": 183.09,
+    "reason": "waveform onset/offset snap (part 1/5)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 184.2,
+    "out": 187.03,
+    "reason": "continuation after pause trim (part 2/5)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 187.44,
+    "out": 192.74,
+    "reason": "continuation after pause trim (part 3/5)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 193.69,
+    "out": 196.05,
+    "reason": "continuation after pause trim (part 4/5)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 196.48,
+    "out": 200.3,
+    "reason": "continuation after pause trim (part 5/5)"
+  },
+  {
+    "text": "Механика простая. Если получатель продает, предложение растет быстрее спроса. И цена приходит к новой точке. Одновесие.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 200.9,
+    "out": 205.48,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 205.91,
+    "out": 208.09,
+    "reason": "continuation after pause trim (part 2/2)"
+  },
+  {
+    "text": "Это, конечно, не катастрофа, но переоценка.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 208.65,
+    "out": 209.17,
+    "reason": "waveform onset/offset snap (part 1/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 210.0,
+    "out": 212.19,
+    "reason": "continuation after pause trim (part 2/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 212.63,
+    "out": 212.88,
+    "reason": "continuation after pause trim (part 3/3)"
+  },
+  {
+    "text": "Отсюда вопрос к портфелю. Какая доля в активах, где календарная разблока, вплотнее графика цены?",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 212.63,
+    "out": 217.3,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "15 октября MSCI утвердила правила исключения из индексов компаний, которые существуют прежде всего для хранения инвестиций.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 220.72,
+    "out": 223.42,
+    "reason": "waveform onset/offset snap (part 1/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 225.74,
+    "out": 226.73,
+    "reason": "continuation after pause trim (part 2/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 227.53,
+    "out": 234.09,
+    "reason": "continuation after pause trim (part 3/3)"
+  },
+  {
+    "text": "Под определение попали Strategy, MetaPlanet.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 234.76,
+    "out": 237.84,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Итоговый список опубликуют 11 ноября. Правила вступят в силу после закрытия торгов 30 ноября. Для криптоказначейской модели это структурная история. Компания покупает биткоин на заемные деньги и живет за счет премии к стоимости активов и доступа к индексным фондам. Убираем индексный спрос, премия сжимается, а долг остается.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 237.64,
+    "out": 238.7,
+    "reason": "waveform onset/offset snap (part 1/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 239.43,
+    "out": 254.71,
+    "reason": "continuation after pause trim (part 2/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 255.13,
+    "out": 258.16,
+    "reason": "continuation after pause trim (part 3/3)"
+  },
+  {
+    "text": "Это не значит, что модель умерла. Это значит, что ее оценивают теперь через долговую нагрузку и стоимость капитала, а не через ожидания.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 258.86,
+    "out": 265.62,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "В параллельно шел обратный процесс. Шваб завершил розничный запуск торговли биткоином и эфиром и добавил криптопереводы.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 269.69,
+    "out": 271.44,
+    "reason": "waveform onset/offset snap (part 1/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 271.81,
+    "out": 277.22,
+    "reason": "continuation after pause trim (part 2/3)"
+  },
+  {
+    "text": "До конца года обещаны Solana, Avalanche и Chainlink.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 277.64,
+    "out": 281.32,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 281.88,
+    "out": 282.16,
+    "reason": "continuation after pause trim (part 2/2)"
+  },
+  {
+    "text": "Visa Direct перевела предфинансирование в USDC из пилота в коммерческую эксплуатацию. Мастер-карты BVNK запустили.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 281.88,
+    "out": 284.54,
+    "reason": "waveform onset/offset snap (part 1/4)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 287.39,
+    "out": 288.4,
+    "reason": "continuation after pause trim (part 2/4)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 289.44,
+    "out": 294.25,
+    "reason": "continuation after pause trim (part 3/4)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 294.8,
+    "out": 297.9,
+    "reason": "continuation after pause trim (part 4/4)"
+  },
+  {
+    "text": "Global Money Platform– первую крупную интеграцию после покупки BVNK за 1,8 млрд долларов. Ripple Prime открыла RWA Perpetual для инвестиционных клиентов через Hyperliquid.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 297.58,
+    "out": 299.29,
+    "reason": "waveform onset/offset snap (part 1/5)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 299.68,
+    "out": 305.12,
+    "reason": "continuation after pause trim (part 2/5)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 306.56,
+    "out": 307.34,
+    "reason": "continuation after pause trim (part 3/5)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 308.56,
+    "out": 310.6,
+    "reason": "continuation after pause trim (part 4/5)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 311.08,
+    "out": 314.45,
+    "reason": "continuation after pause trim (part 5/5)"
+  },
+  {
+    "text": "DTCC раскрыла план стокинизации 25 видов ценных бумаг на кантон и безумие. BingX, европейское отделение компании, 15 октября получила лицензию MECAR в Австрии. Смысл один– инфраструктура строится, пока цена стоит.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 315.01,
+    "out": 320.56,
+    "reason": "waveform onset/offset snap (part 1/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 321.12,
+    "out": 327.22,
+    "reason": "continuation after pause trim (part 2/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 327.66,
+    "out": 330.53,
+    "reason": "continuation after pause trim (part 3/3)"
+  },
+  {
+    "text": "Регуляторный контр тоже был плотным. Банк России 15 октября подтвердил. С 1 июля 2027 года прямые P2P сделки с криптовалютой между физлицами запрещаются. Операции только через лицензированных брокеров и биржи.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 334.62,
+    "out": 344.83,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 345.38,
+    "out": 348.39,
+    "reason": "continuation after pause trim (part 2/2)"
+  },
+  {
+    "text": "Битгет внес Россию, Беларусь и Казахстан в запрещенные юрисдикции. Ограничения действуют с 18 октября.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 348.97,
+    "out": 350.36,
+    "reason": "waveform onset/offset snap (part 1/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 351.39,
+    "out": 352.24,
+    "reason": "continuation after pause trim (part 2/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 354.08,
+    "out": 359.97,
+    "reason": "continuation after pause trim (part 3/3)"
+  },
+  {
+    "text": "Суд Тайвань разрешил заблокировать Coinbase и Kelshi.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 360.43,
+    "out": 363.63,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "CFTC предложила федеральный надзор за криптобиржами. Ну а Патрик Уитт покинул пост главы президентского совета по цифровым валютам. На столе лежат Clarity Act с разделением полномочий между SEC и CFTC.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 364.39,
+    "out": 371.72,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 372.15,
+    "out": 376.48,
+    "reason": "continuation after pause trim (part 2/2)"
+  },
+  {
+    "text": "Вывод– юрисдикция и площадка теперь такие же параметры риска, как волатильность активов.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 377.29,
+    "out": 382.26,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "В неделю дала три жестких урока по хранению.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 390.48,
+    "out": 392.76,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "Ledger подтвердила вредоносные импланты в аппаратных кошельках, купленных у сторонних реселлеров. Оценка ущерба составляет около 100 миллионов долларов. Кьюбик после атаки через слабые сит-фразы потерял около 1,4 тысячи кошельков. Сайсик остановила мост после несанкционированной миссии 10 миллионов своих токенов и вывода примерно 727 тысяч долларов.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 393.18,
+    "out": 396.31,
+    "reason": "waveform onset/offset snap (part 1/5)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 396.76,
+    "out": 398.38,
+    "reason": "continuation after pause trim (part 2/5)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 398.75,
+    "out": 401.48,
+    "reason": "continuation after pause trim (part 3/5)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 402.03,
+    "out": 406.71,
+    "reason": "continuation after pause trim (part 4/5)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 407.3,
+    "out": 415.55,
+    "reason": "continuation after pause trim (part 5/5)"
+  },
+  {
+    "text": "В Турции задержан Ричард Харт. Основатель Hex и Pulse Chain.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 416.19,
+    "out": 420.64,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Изъято 7,15 миллионов наличными и 6 холодных кошельков.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 420.47,
+    "out": 424.98,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "По данным Хакен, ущерб от взломов в третьем квартале составляет 1,18 миллиарда долларов. Практика простая. Железо только у производителя. Сит проверяется, ну а капитал лежит в одной точке доступа.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 425.54,
+    "out": 430.7,
+    "reason": "waveform onset/offset snap (part 1/4)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 431.27,
+    "out": 434.76,
+    "reason": "continuation after pause trim (part 2/4)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 435.63,
+    "out": 436.29,
+    "reason": "continuation after pause trim (part 3/4)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 437.57,
+    "out": 440.59,
+    "reason": "continuation after pause trim (part 4/4)"
+  },
+  {
+    "text": "Что впереди?",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 444.63,
+    "out": 445.84,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "21 октября Solana запускает. Обновление Alpenglow.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 445.66,
+    "out": 449.05,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Sol торгуется около 104 долларов за штуку.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 449.56,
+    "out": 452.88,
+    "reason": "waveform onset/offset snap (part 1/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 454.89,
+    "out": 455.71,
+    "reason": "continuation after pause trim (part 2/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 457.93,
+    "out": 461.97,
+    "reason": "continuation after pause trim (part 3/3)"
+  },
+  {
+    "text": "В тот же день разблокировка 2% предложения на 66,9 миллиона долларов. Это 9% капитализации по данным Хакен.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 463.02,
+    "out": 470.78,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "19 октября прошел разлог 2Z с распределением между семью адресатами.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 471.49,
+    "out": 476.74,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "22 октября.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 476.53,
+    "out": 477.7,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Байбит обновляет уровни маржинальной торговли.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 477.38,
+    "out": 480.04,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "У BitGet появился индивидуальный дедлайн для части пользователей из России. Тем, кто там остался, стоит проверить статус актаунта до конца недели. И главное, весь октябрь рынок следит за потоком спотовой BTC ETF.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 480.56,
+    "out": 481.51,
+    "reason": "waveform onset/offset snap (part 1/4)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 482.28,
+    "out": 482.97,
+    "reason": "continuation after pause trim (part 2/4)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 484.9,
+    "out": 492.38,
+    "reason": "continuation after pause trim (part 3/4)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 492.74,
+    "out": 497.3,
+    "reason": "continuation after pause trim (part 4/4)"
+  },
+  {
+    "text": "Теперь сценарий.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 548.2,
+    "out": 549.07,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Базовая консолидация в диапазоне 82 000-87 000. До конца октября. Рынок собирает ликвидность с обеих сторон. А катализаторами являются решения ФРС с 28 октября и выборы в США промежуточные в начале ноября.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 549.58,
+    "out": 563.27,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Шанс повышения ставки оценивается в 12,7%.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 563.91,
+    "out": 566.25,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "То есть пауза почти заложена в цену.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 565.82,
+    "out": 568.99,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Сценарием роста является возврат притока ВТФ и выход выше 87 000 долларов. Сценарий, который отменяет идею удержания- это закрепление ниже 80 000 при продолжающемся оттоке из фондов.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 569.59,
+    "out": 570.92,
+    "reason": "waveform onset/offset snap (part 1/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 572.24,
+    "out": 577.26,
+    "reason": "continuation after pause trim (part 2/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 577.84,
+    "out": 584.14,
+    "reason": "continuation after pause trim (part 3/3)"
+  },
+  {
+    "text": "Тогда ориентиры пересчитываются по факту, а логика меняется с накоплением на сокращение риска.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 585.57,
+    "out": 590.12,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Уровни названы, условия отмены названы.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 590.8,
+    "out": 592.91,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Что ж, перейдем к практическим выводам.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 595.53,
+    "out": 597.05,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Разлоги- это календарь, а не новость. Если в портфеле есть активы с плотным графиком до конца октября, посчитайте долю и заранее решите, что делаете при просадке.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 597.63,
+    "out": 606.39,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Потоки ВТФ сейчас главный индикатор институционального спроса. Две недели оттока почти на миллиард- это сигнал, а не шум.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 607.13,
+    "out": 613.43,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 614.68,
+    "out": 618.03,
+    "reason": "continuation after pause trim (part 2/2)"
+  },
+  {
+    "text": "MSCI создала структурный риск для криптозначейских компаний.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 618.74,
+    "out": 622.2,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Их бумаги оцениваются иначе, чем сам биткоин.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 621.94,
+    "out": 625.13,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "Кастидиальный риск стоит денег.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 625.8,
+    "out": 628.14,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "100 миллионов долларов через реселлеров- это напоминание.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 628.66,
+    "out": 631.47,
+    "reason": "waveform onset/offset snap"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 633.61,
+    "out": 636.67,
+    "reason": "continuation after pause trim (part 2/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 637.01,
+    "out": 639.48,
+    "reason": "continuation after pause trim (part 3/3)"
+  },
+  {
+    "text": "Если разбор был полезен, подписывайтесь на канал, чтобы не пропускать понедельничные итоги рынка. В описании ссылка на BingX, моего партнера, и тайм-коды по сегментам.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 641.88,
+    "out": 647.01,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 647.38,
+    "out": 650.25,
+    "reason": "continuation after pause trim (part 2/2)"
+  },
+  {
+    "text": "Напишите в комментариях, что для вашего портфеля важнее на этой неделе: потоки ВТФ, календарь разлоков или решение ФРС 28 октября. Читаю все.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 649.84,
+    "out": 651.56,
+    "reason": "waveform onset/offset snap (part 1/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 652.03,
+    "out": 655.34,
+    "reason": "continuation after pause trim (part 2/3)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 655.69,
+    "out": 660.67,
+    "reason": "continuation after pause trim (part 3/3)"
+  },
+  {
+    "text": "В следующем выпуске разберем, как рынок переварил старт Solana, Alpenglow и что показал разлок 2Z.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 661.33,
+    "out": 663.73,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 665.52,
+    "out": 671.46,
+    "reason": "continuation after pause trim (part 2/2)"
+  },
+  {
+    "text": "Все цифры подсостоим на 19 октября 10:50 по Москве. Это разбор, а не индивидуальная рекомендация.",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 672.19,
+    "out": 675.79,
+    "reason": "waveform onset/offset snap (part 1/2)"
+  },
+  {
+    "text": "",
+    "source": "2026-10-19 13-33-11.mp4",
+    "in": 676.15,
+    "out": 679.77,
+    "reason": "continuation after pause trim (part 2/2) + tail hold (let the closing words land)"
+  }
+]

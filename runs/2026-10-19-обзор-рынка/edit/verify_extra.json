@@ -1,0 +1,64 @@
+{
+  "checks": [
+    {
+      "check": "frame_sheet",
+      "status": "PASS",
+      "measured": "47/47 stills in frames/",
+      "target": "one still per graphics element, after it settled"
+    },
+    {
+      "check": "audio_sync",
+      "status": "PASS",
+      "measured": "lag +0.00 ms (correlation 1.0000)",
+      "target": "|lag| <= 5.0 ms"
+    },
+    {
+      "check": "levels",
+      "status": "PASS",
+      "measured": "paired on 13 EDL frames: source 0.03% -> final 0.02% clipped at 255 (grade adds -0.01 pp); p50 184-192; mean luma change 5.72/255",
+      "target": "grade adds <= 0.3 pp of clipping",
+      "note": "17 frame(s) skipped: graphics on screen (§9.3 plates are white by design)"
+    },
+    {
+      "check": "jitter",
+      "status": "PASS",
+      "measured": "max centroid drift 0.000 px/frame per element (4 element(s), )",
+      "target": "<= 0.25 px/frame on hold"
+    },
+    {
+      "check": "sfx_placement",
+      "status": "PASS",
+      "measured": "51/51 events raise the level (median +8.5 dB)",
+      "target": "each planned event louder than the voice-only track in its window",
+      "note": ""
+    },
+    {
+      "check": "determinism",
+      "status": "PASS",
+      "measured": "no infinite animation, no random/time source; 3 deterministic tl.call steps",
+      "target": "no infinite, Math.random, Date.now, performance.now"
+    },
+    {
+      "check": "copy_quality",
+      "status": "PASS",
+      "measured": "228 text node(s), 0 with an ellipsis; 0 line(s) rewritten to fit; copy: 2026-10-19-обзор-рынка-inserts.json",
+      "target": "0 ellipses on screen; long lines are rewritten, not cut short"
+    },
+    {
+      "check": "retakes",
+      "status": "PASS",
+      "measured": "134 clips checked; 0 duplicate pair(s) left",
+      "target": "0 repeated or aborted phrases (build_edl.py + build_words_dtw.py remove them)"
+    },
+    {
+      "check": "face_safe",
+      "status": "PASS",
+      "measured": "face box x42% y30% 20×38%; 19 frame(s) measured, 5 exempt (liquid-glass stage); no graphics on the face",
+      "target": "0 frames with a graphic over the face outside the declared glass stage"
+    }
+  ],
+  "passed": 9,
+  "failed": 0,
+  "skipped": 0,
+  "verdict": "PASS"
+}
