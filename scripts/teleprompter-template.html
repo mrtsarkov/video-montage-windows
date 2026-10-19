@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+  @font-face { font-family:'Inter'; src:__FONT_SRC__; font-weight:800; font-display:block; }
+  :root { --red:#EF3124; --ink:#1A1C1C; --muted:#666; --fs:__SIZE__px;
+    --colw:__COLW__; --fscale:1; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; background:#FFFFFF; color:var(--ink); overflow:hidden;
+    font-family:'Inter',Arial,'Segoe UI',sans-serif; -webkit-font-smoothing:antialiased; }
+  /* --- верхняя панель: REC, название, выбор кегля --- */
+  #top { position:fixed; top:0; left:0; right:0; z-index:20; display:flex; align-items:center;
+    gap:16px; padding:10px 20px; background:var(--red); color:#fff;
+    transition:opacity .22s ease, transform .22s ease; }
+  /* во время чтения панель уезжает: крупный кегль не должен упираться в неё */
+  body.chrome-hidden #top { opacity:0; transform:translateY(-100%); pointer-events:none; }
+  #top .rec { font-weight:800; font-size:clamp(15px,1.3vw,22px); white-space:nowrap; }
+  #top .title { font-weight:800; font-size:clamp(15px,1.3vw,22px); white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis; }
+  #top .spacer { flex:1 1 auto; }
+  .fsgroup { display:flex; align-items:center; gap:8px; flex:none; }
+  .fbtn { appearance:none; border:2px solid rgba(255,255,255,.8); background:transparent; color:#fff;
+    font-family:inherit; font-weight:800; font-size:17px; line-height:1; padding:6px 11px;
+    border-radius:9px; cursor:pointer; }
+  .fbtn:hover { background:rgba(255,255,255,.18); }
+  .fbtn:active { background:rgba(255,255,255,.32); }
+  #fs { width:132px; accent-color:#fff; cursor:pointer; }
+  #fsval { font-weight:800; font-size:17px; min-width:62px; text-align:right;
+    font-variant-numeric:tabular-nums; }
+  #keys { font-weight:500; font-size:15px; opacity:.85; white-space:nowrap; }
+  @media (max-width: 1500px) { #keys { display:none; } }
+  @media (max-width: 1100px) { #fs { width:90px; } #top { gap:10px; padding:8px 12px; } }
+  /* --- полотно с текстом --- */
+  #wrap { position:absolute; inset:0; padding:0; overflow:hidden; }
+  #roll { width:var(--colw); margin:0 auto; transform:translateY(0px); will-change:transform;
+    opacity:0; }
+  body.ready #roll { opacity:1; }
+  section { padding:5vh 0 4vh; border-top:4px solid #F1F1F1; }
+  section:first-child { border-top:0; padding-top:2vh; }
+  .head { display:flex; align-items:baseline; gap:18px; margin-bottom:2vh; }
+  .num { color:var(--red); font-weight:800; font-size:calc(var(--fs) * .62); }
+  .ttl { font-weight:800; font-size:calc(var(--fs) * .58); letter-spacing:-.02em; }
+  .dur { margin-left:auto; color:var(--muted); font-weight:800; font-size:calc(var(--fs) * .42);
+    white-space:nowrap; }
+  .say { font-size:var(--fs); line-height:1.5; font-weight:800; margin:0; white-space:pre-line; }
+  .note { margin-top:1.6vh; color:#9A9A9A; font-size:calc(var(--fs) * .40); line-height:1.35; }
+  /* --- индикаторы --- */
+  #cue { position:fixed; left:0; right:0; bottom:0; height:4px; background:var(--red); width:0%;
+    z-index:21; }
+  #hud { position:fixed; left:20px; bottom:12px; z-index:21; color:#B5B5B5; font-weight:800;
+    font-size:15px; letter-spacing:.02em; font-variant-numeric:tabular-nums; pointer-events:none; }
+  #hud span { color:#8E8E8E; }
+  body.mirror #wrap { transform:scaleX(-1); }
+  body.noguides #dim, body.noguides #guide, body.noguides #lens { display:none; }
+__EYELINE_CSS__
+</style>
+</head>
+<body class="__BODY_CLASS__">
+<div id="cue"></div>
+__GUIDES__
+<div id="top">
+  <span class="rec">● REC</span>
+  <span class="title">__TITLE__</span>
+  <span class="spacer"></span>
+  <span class="fsgroup">
+    <button class="fbtn" id="fsminus" type="button" title="Мельче (клавиша −)">A−</button>
+    <input id="fs" type="range" min="__FS_MIN__" max="__FS_MAX__" step="2" value="__SIZE__"
+           aria-label="Размер шрифта">
+    <button class="fbtn" id="fsplus" type="button" title="Крупнее (клавиша +)">A+</button>
+    <span id="fsval">__SIZE__ px</span>
+  </span>
+  <span id="keys">пробел — пауза · ↑↓ — скорость · + − — шрифт · M — зеркало</span>
+</div>
+<div id="wrap"><div id="roll">__SECTIONS__</div></div>
+<div id="hud"><span id="blk">01 / 12</span> · <span id="tmp">темп ×1.00</span></div>
+<script>
+(function () {
+  'use strict';
+  var CFG = __CFG__;
+  var MIN = CFG.sizeMin, MAX = CFG.sizeMax;
+
+  var roll = document.getElementById('roll');
+  var cue = document.getElementById('cue');
+  var fsRange = document.getElementById('fs');
+  var fsVal = document.getElementById('fsval');
+  var blkEl = document.getElementById('blk');
+  var tmpEl = document.getElementById('tmp');
+  var sections = [].slice.call(roll.querySelectorAll('section'));
+  var says = sections.map(function (s) { return s.querySelector('.say'); });
+
+  var KEY_FS = 'tp.fs';
+  var KEY_SPEED = 'tp.speed';
+  var KEY_MIRROR = 'tp.mirror';
+
+  function store(key, value) { try { localStorage.setItem(key, String(value)); } catch (e) {} }
+  function load(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+  function clamp(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function query(name) {
+    var m = new RegExp('[?&]' + name + '=([^&]*)').exec(location.search || '');
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+
+  var factor = clamp(parseFloat(load(KEY_SPEED)) || CFG.speedFactor || 1, 0.35, 3);
+  var size = CFG.size;
+  var startY = 0, readingY = 0, endY = 0, travel = 1, pxPerSec = 1;
+  var y = 0, paused = false, wait = 1.2, last = performance.now();
+  var lastBlock = -1, ready = false, jumpIdx = null, lastInput = performance.now();
+  var NOGUI = query('nogui') === '1';   // чистый экран без верхней панели
+  var bodyTops = [];   // верх текста каждого блока относительно #roll
+
+  // position:fixed + transform не влияет на offsetTop, поэтому меряем ректами,
+  // и только при пересборке раскладки (а не каждый кадр)
+  function measure() {
+    var base = roll.getBoundingClientRect().top;
+    bodyTops = says.map(function (el, i) {
+      return (el || sections[i]).getBoundingClientRect().top - base;
+    });
+    document.body.classList.toggle('narrowcol', roll.getBoundingClientRect().left < 205);
+  }
+
+  // середина первой строки абзаца = высота line-box / 2 = 0.75 × кегль
+  function halfLine() { return size * 0.75; }
+
+  function layout() {
+    measure();
+    var h = innerHeight || 1;
+    var sh = roll.scrollHeight || 1;
+    var lens = h * CFG.lensPct / 100;
+    if (CFG.eyeline) {
+      // линия чтения — на высоте объектива; в начале на ней стоит первая фраза
+      // первого блока, а не служебный заголовок
+      startY = lens - (bodyTops[0] + halfLine());
+      readingY = lens;
+      endY = readingY - sh;
+    } else {
+      startY = h * 0.80;
+      readingY = h * 0.42;
+      endY = readingY - sh;
+    }
+    travel = Math.max(1, startY - endY);
+    pace();
+  }
+
+  function progress() { return clamp((startY - y) / travel, 0, 1); }
+
+  function currentBlock() {
+    var line = readingY - y;   // координата линии чтения внутри #roll
+    var idx = 0;
+    for (var i = 0; i < bodyTops.length; i++) {
+      if (bodyTops[i] + halfLine() <= line) idx = i;
+    }
+    return idx;
+  }
+
+  function hud() {
+    var idx = currentBlock();
+    if (idx !== lastBlock) {
+      lastBlock = idx;
+      blkEl.textContent = pad2(idx + 1) + ' / ' + pad2(sections.length);
+    }
+    var wpm = Math.round(factor * CFG.words * 60 / Math.max(1, CFG.plannedS));
+    tmpEl.textContent = 'темп ×' + factor.toFixed(2) + ' · ~' + wpm + ' сл/мин';
+  }
+
+  function render() {
+    roll.style.transform = 'translateY(' + y.toFixed(2) + 'px)';
+    cue.style.width = (progress() * 100).toFixed(2) + '%';
+    hud();
+    if (!ready) { ready = true; document.body.classList.add('ready'); }
+  }
+
+  function pace() { pxPerSec = factor * travel / Math.max(1, CFG.plannedS); }
+
+  function reflow(keepPlace) {
+    var p = travel > 1 ? progress() : 0;
+    layout();
+    y = keepPlace ? startY - p * travel : startY;
+    render();
+  }
+
+  function setSize(next, persist) {
+    next = clamp(Math.round(next), MIN, MAX);
+    if (next === size) return;
+    size = next;
+    document.documentElement.style.setProperty('--fs', size + 'px');
+    // колонка тянется вместе с кеглем: строк в строке остаётся столько же,
+    // поэтому темп чтения не меняется при смене размера
+    document.documentElement.style.setProperty('--fscale', (size / CFG.size).toFixed(4));
+    fsVal.textContent = size + ' px';
+    fsRange.value = String(size);
+    reflow(true);
+    if (persist !== false) store(KEY_FS, size);
+  }
+
+  function setSpeed(delta) {
+    factor = clamp(Math.round((factor + delta) * 100) / 100, 0.35, 3);
+    pace();
+    render();
+    store(KEY_SPEED, factor);
+  }
+
+  function jumpToBlock(i) {
+    i = clamp(i, 0, sections.length - 1);
+    jumpIdx = i;
+    y = readingY - (bodyTops[i] + halfLine());
+    if (y > startY) y = startY;
+    if (y < endY) y = endY;
+    render();
+  }
+
+  function togglePlay() {
+    wakeChrome();
+    if (!paused) { paused = true; return; }
+    if (y <= endY + 1) { y = startY; render(); }
+    wait = 0; paused = false; last = performance.now();
+    // панель уходит сразу: на линии чтения крупному кеглю нужен весь верх экрана
+    document.body.classList.add('chrome-hidden');
+    lastInput = 0;
+  }
+
+  function userPause() { paused = true; wakeChrome(); }
+
+  function wakeChrome() {
+    if (NOGUI) return;
+    lastInput = performance.now();
+    document.body.classList.remove('chrome-hidden');
+  }
+
+  function tick(now) {
+    var dt = Math.min(0.12, (now - last) / 1000);
+    last = now;
+    if (wait > 0) {
+      wait -= dt;
+      if (wait <= 0) {
+        wait = 0;
+        if (!paused) { document.body.classList.add('chrome-hidden'); lastInput = 0; }
+      }
+    } else if (!paused) {
+      y -= pxPerSec * dt;
+      if (y <= endY) { y = endY; paused = true; }
+      render();
+      if (lastInput && now - lastInput > 1200) document.body.classList.add('chrome-hidden');
+    }
+    requestAnimationFrame(tick);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    var tag = (e.target && e.target.tagName) || '';
+    var typing = /^(INPUT|TEXTAREA|SELECT)$/.test(tag);
+    if (typing && /^( |Arrow)/.test(e.key)) return;
+    wakeChrome();
+    switch (e.key) {
+      case ' ': case 'Spacebar':
+        e.preventDefault(); togglePlay(); break;
+      case 'ArrowUp':
+        e.preventDefault(); userPause(); setSpeed(0.06); break;
+      case 'ArrowDown':
+        e.preventDefault(); userPause(); setSpeed(-0.06); break;
+      case '+': case '=': case 'Add':
+        e.preventDefault(); userPause(); setSize(size + 4); break;
+      case '-': case '_': case 'Subtract':
+        e.preventDefault(); userPause(); setSize(size - 4); break;
+      case 'Home': case 'r': case 'R':
+        e.preventDefault(); paused = true; y = startY; render(); break;
+      case 'PageDown':
+        e.preventDefault(); userPause(); jumpToBlock(currentBlock() + 1); break;
+      case 'PageUp':
+        e.preventDefault(); userPause(); jumpToBlock(currentBlock() - 1); break;
+      case 'm': case 'M':
+        document.body.classList.toggle('mirror');
+        store(KEY_MIRROR, document.body.classList.contains('mirror') ? '1' : '0');
+        break;
+      case 'g': case 'G':
+        document.body.classList.toggle('noguides');
+        break;
+      case 'f': case 'F':
+        if (document.fullscreenElement) { document.exitFullscreen(); }
+        else if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(function () {});
+        }
+        break;
+      default: break;
+    }
+  });
+
+  document.getElementById('fsminus').addEventListener('click', function () {
+    userPause(); setSize(size - 4);
+  });
+  document.getElementById('fsplus').addEventListener('click', function () {
+    userPause(); setSize(size + 4);
+  });
+  fsRange.addEventListener('input', function () {
+    userPause(); setSize(parseInt(fsRange.value, 10) || size);
+  });
+  roll.addEventListener('wheel', function (e) {
+    e.preventDefault(); userPause(); y -= e.deltaY; render();
+  }, { passive: false });
+
+  ['pointermove', 'pointerdown', 'wheel', 'touchstart'].forEach(function (ev) {
+    addEventListener(ev, wakeChrome, { passive: true });
+  });
+
+  addEventListener('resize', function () { reflow(true); });
+
+  // исходный кегль: ?size=NN → из localStorage → из сборки
+  var qs = parseInt(query('size'), 10);
+  var saved = parseInt(load(KEY_FS), 10);
+  var initial = clamp(Math.round(qs || saved || CFG.size), MIN, MAX);
+  if (load(KEY_MIRROR) === '1') document.body.classList.add('mirror');
+  if (CFG.mirror === true) document.body.classList.add('mirror');
+  if (query('paused') === '1') { paused = true; wait = 0; }
+  if (parseInt(query('block'), 10) > 0) { paused = true; wait = 0; }
+
+  var started = false;
+  function boot() {
+    if (started) return;
+    started = true;
+    layout();
+    y = startY;
+    render();
+    setSize(initial, false);
+    if (NOGUI) document.body.classList.add('chrome-hidden');
+    if (parseInt(query('block'), 10) > 0) { jumpToBlock(parseInt(query('block'), 10) - 1); }
+    requestAnimationFrame(tick);
+  }
+  // ждём вшитый шрифт: до его загрузки строки разбиваются иначе и позиции блоков
+  // «уезжают» на десятки пикселей; страховка на 900 мс — работаем на запасном шрифте
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      if (!started) { boot(); return; }
+      reflow(true);
+      if (jumpIdx !== null) jumpToBlock(jumpIdx);
+    }, function () { boot(); });
+    setTimeout(boot, 900);
+  } else {
+    boot();
+  }
+
+  // автозапуск в OBS: страница начинает идти сама через 1.2 с,
+  // но любое действие руками (клавиша/клик/колесо) останавливает её
+  function stopAutostart() { wait = 0; paused = true; }
+  ['pointerdown', 'wheel', 'touchstart'].forEach(function (ev) {
+    addEventListener(ev, stopAutostart, { passive: true, once: true });
+  });
+})();
+</script>
+</body>
+</html>

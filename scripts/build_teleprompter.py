@@ -1,25 +1,52 @@
 #!/usr/bin/env python3
-"""Generate a standalone teleprompter page for an OBS Browser Source.
+"""Generate a standalone teleprompter page for an OBS Browser Source / second monitor.
 
 OBS has no built-in teleprompter, and the community plugin does not load on OBS 32
 (verified: the module never appears in the OBS log). A Browser Source needs no plugin
 at all, so this builds a self-contained page with the script text embedded — no file
-access, no CORS, works on any OBS version.
+access, no CORS, works on any OBS version and on any machine (the brand font is embedded
+into the page as base64).
 
 Usage:
   build_teleprompter.py <script.md|.txt|.docx> <out.html>
-                        [--speed 42] [--size 66] [--mirror] [--title "..."]
+                        [--speed 1.0] [--size 66] [--size-min 36] [--size-max 120]
+                        [--eyeline] [--lens-percent 9] [--column-vw 46]
+                        [--mirror] [--font path.ttf] [--title "..."]
 
-In OBS: Источники → + → Браузер → Local file → выбрать out.html,
-размер 1920x1080. Управление в самом окне источника: пробел — пауза, ↑/↓ — скорость.
+Reading-page keys:
+  пробел            пауза / продолжить
+  ↑ / ↓             темп медленнее / быстрее (шаг 6 %, множитель к плановой длительности)
+  + / −             кегль крупнее / мельче (шаг 4 px, 36..120)
+  PageUp / PageDown предыдущий / следующий блок
+  R или Home        вернуться в начало и встать на паузу
+  M                 зеркало (для суфлёрского стекла)
+  G                 спрятать/показать линию объектива и затемнение
+  F                 полный экран
+Кегль выбирается ещё и мышью: A− / ползунок / A+ в верхней панели; выбранный
+размер запоминается в браузере и переживает перезагрузку страницы.
 """
 from __future__ import annotations
 
 import argparse
+import base64
 import html
+import json
 import re
 import zipfile
 from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+REPO = HERE.parent
+TEMPLATE = HERE / "teleprompter-template.html"
+
+# приоритет: шрифт из брендбука (полная кириллица), затем рабочие копии
+FONT_CANDIDATES = (
+    REPO / "refs" / "brandbook" / "fonts" / "inter-v20-cyrillic_latin_latin-ext-800.ttf",
+    REPO / "script" / "fonts" / "Inter-800.ttf",
+    REPO / "fonts" / "Inter-800.ttf",
+)
+
+SENTENCE_SPLIT = re.compile(r"(?<=[.!?…])\s+")
 
 
 def read_docx(path: Path) -> str:
@@ -62,9 +89,29 @@ def split_blocks(text: str) -> list[dict]:
     return blocks
 
 
-def build_html(blocks: list[dict], title: str, speed: int, size: int, mirror: bool,
-               lens_pct: float | None = None, lens_x_pct: float = 50.0,
-               column_vw: float = 46.0) -> str:
+def sentences(text: str) -> list[str]:
+    """One sentence per line: the eye returns to the start of a line, not to the
+    middle of a wall of text — this is what makes a teleprompter readable."""
+    return [s for s in SENTENCE_SPLIT.split(" ".join(text.split())) if s.strip()]
+
+
+def font_src(explicit: str | None) -> tuple[str, str]:
+    path = Path(explicit) if explicit else None
+    if path is None:
+        for cand in FONT_CANDIDATES:
+            if cand.is_file():
+                path = cand
+                break
+    if path is not None and path.is_file():
+        data = base64.b64encode(path.read_bytes()).decode("ascii")
+        return f"url(data:font/ttf;base64,{data}) format('truetype')", f"{path.name} (вшит, {path.stat().st_size // 1024} КБ)"
+    return "url('fonts/Inter-800.ttf')", "не найден — запасной шрифт системы"
+
+
+def build_html(blocks: list[dict], title: str, size: int, mirror: bool,
+               lens_pct: float | None = None, column_vw: float = 46.0,
+               speed: float = 1.0, size_min: int = 36, size_max: int = 120,
+               font_path: str | None = None) -> str:
     """`lens_pct` switches on eyeline mode.
 
     Eyeline mode is the answer to "how do we keep the eyes on the camera": the line
@@ -74,109 +121,102 @@ def build_html(blocks: list[dict], title: str, speed: int, size: int, mirror: bo
     A ring marks the lens and everything below the reading line is dimmed.
     """
     planned = sum(b["planned_s"] for b in blocks)
+    words = sum(len(" ".join(b["text"]).split()) for b in blocks)
     parts = []
     for b in blocks:
         note = "".join(f'<div class="note">{html.escape(n)}</div>' for n in b["broll"])
-        body = " ".join(html.escape(t) for t in b["text"])
+        body = "\n".join(html.escape(s) for s in sentences(" ".join(b["text"])))
         parts.append(
-            f'<section><div class="head"><span class="num">{b["n"]:02d}</span>'
+            f'<section id="blk{b["n"]}" data-n="{b["n"]}"><div class="head">'
+            f'<span class="num">{b["n"]:02d}</span>'
             f'<span class="ttl">{html.escape(b["title"])}</span>'
             f'<span class="dur">~{b["planned_s"]} сек</span></div>'
             f'<p class="say">{body}</p>{note}</section>'
         )
+
     eyeline = lens_pct is not None
-    lens = float(lens_pct if eyeline else 80.0)
+    lens = float(lens_pct if eyeline else 9.0)
+    # колонка меряется в vw при базовом кегле и тянется вместе с ним (--fscale):
+    # при любом размере шрифта в строке остаётся одно и то же число знаков
+    colw = (f"min(92vw, calc({column_vw:.1f}vw * var(--fscale)))"
+            if eyeline else "84vw")
     guides = ""
     extra_css = ""
     if eyeline:
         guides = (
-            f'<div id="dim"></div><div id="guide"></div>'
-            f'<div id="lens" style="left:{lens_x_pct:.1f}%">'
-            f'<span class="ring"></span><span class="lbl">объектив · читать здесь</span></div>'
+            '<div id="dim"></div><div id="guide"></div>'
+            '<div id="lens"><span class="ring"></span>'
+            '<span class="lbl">объектив · линия чтения</span></div>'
         )
         extra_css = f"""
   /* eyeline mode: the line being read sits on the camera's optical axis */
-  #wrap {{ padding:0 {max(8.0, (100 - column_vw) / 2):.1f}vw; }}
   #dim {{ position:fixed; left:0; right:0; top:{lens:.2f}%; bottom:0; z-index:3;
-    pointer-events:none; background:linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.55) 30%,
-    rgba(255,255,255,.82)); }}
+    pointer-events:none; background:linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.46) 34%,
+    rgba(255,255,255,.75)); }}
   #guide {{ position:fixed; left:0; right:0; top:{lens:.2f}%; height:0; z-index:4;
     border-top:2px dashed rgba(239,49,36,.55); }}
-  #lens {{ position:fixed; top:{lens:.2f}%; transform:translate(-50%,-50%); z-index:6;
-    display:flex; align-items:center; gap:10px; }}
-  #lens .ring {{ width:34px; height:34px; border-radius:50%; border:3px solid var(--red);
-    box-shadow:0 0 0 6px rgba(239,49,36,.12); }}
-  #lens .lbl {{ color:var(--red); font-weight:800; font-size:18px; white-space:nowrap; }}
+  #lens {{ position:fixed; left:16px; top:{lens:.2f}%; transform:translateY(-50%); z-index:6;
+    display:flex; align-items:center; gap:12px; pointer-events:none; }}
+  #lens .ring {{ width:26px; height:26px; border-radius:50%; border:3px solid var(--red);
+    background:#fff; box-shadow:0 0 0 5px rgba(239,49,36,.10); flex:none; }}
+  #lens .lbl {{ color:var(--red); font-weight:800; font-size:15px; white-space:nowrap;
+    background:#fff; padding:2px 8px; border-radius:5px; }}
+  body.narrowcol #lens .lbl {{ display:none; }}
 """
-    return f"""<!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><title>{html.escape(title)}</title>
-<style>
-  @font-face {{ font-family:'Inter'; src:url('fonts/Inter-800.ttf'); font-weight:800; }}
-  :root {{ --red:#EF3124; --ink:#1A1C1C; --muted:#666; }}
-  html,body {{ margin:0; height:100%; background:#FFFFFF; color:var(--ink); overflow:hidden;
-    font-family:'Inter',Arial,sans-serif; }}
-  #wrap {{ position:absolute; inset:0; padding:0 8vw; overflow:hidden; }}
-  #roll {{ transform: translateY(100vh); will-change: transform; }}
-  section {{ padding:5vh 0 4vh; border-top:4px solid #F3F3F3; }}
-  .head {{ display:flex; align-items:baseline; gap:18px; margin-bottom:2vh; }}
-  .num {{ color:var(--red); font-weight:800; font-size:calc({size}px * .62); }}
-  .ttl {{ font-weight:800; font-size:calc({size}px * .58); letter-spacing:-.02em; }}
-  .dur {{ margin-left:auto; color:var(--muted); font-weight:800; font-size:calc({size}px * .42); }}
-  #top {{ position:fixed; top:0; left:0; right:0; z-index:8; display:flex; align-items:center; gap:14px;
-    padding:14px 28px; background:var(--red); color:#fff; font-weight:800; font-size:24px; }}
-  #top .meta {{ margin-left:auto; font-weight:500; font-size:20px; opacity:.9; }}
-  .say {{ font-size:{size}px; line-height:1.5; font-weight:800; margin:0; }}
-  .note {{ margin-top:1.6vh; color:#9a9a9a; font-size:calc({size}px * .42); line-height:1.35; }}
-  #cue {{ position:fixed; top:0; left:0; right:0; height:5px; background:var(--red); width:0%; z-index:9; }}
-  #hint {{ position:fixed; right:24px; bottom:16px; color:#c9c9c9; font-size:16px; z-index:9; }}
-  body.mirror #wrap {{ transform: scaleX(-1); }}
-{extra_css}</style></head>
-<body{' class="mirror"' if mirror else ''}>
-<div id="cue"></div>
-<div id="top"><span>● REC</span><span>{html.escape(title)}</span>
-  <span class="meta">пробел — пауза · ↑ ↓ — скорость</span></div>
-{guides}
-<div id="wrap"><div id="roll">{''.join(parts)}</div></div>
-<script>
-  const roll = document.getElementById('roll'), cue = document.getElementById('cue');
-  const total = roll.scrollHeight + innerHeight;
-  const LENS = innerHeight * {lens:.2f} / 100;
-  let y = LENS, speed = {speed}, paused = false, last = performance.now(), wait = 1.2;
-  roll.style.transform = `translateY(${{y}}px)`;
-  document.addEventListener('keydown', e => {{
-    if (e.code === 'Space') {{ paused = !paused; e.preventDefault(); }}
-    if (e.code === 'ArrowUp')   speed = Math.min(300, speed + 4);
-    if (e.code === 'ArrowDown') speed = Math.max(6, speed - 4);
-  }});
-  function tick(now) {{
-    const dt = (now - last) / 1000; last = now;
-    if (wait > 0) {{ wait -= dt; }}
-    else if (!paused) {{ y -= speed * dt; roll.style.transform = `translateY(${{y}}px)`;
-      cue.style.width = Math.min(100, Math.max(0, (1 - y / total) * 100)) + '%'; }}
-    requestAnimationFrame(tick);
-  }}
-  requestAnimationFrame(tick);
-</script>
-</body></html>
-"""
+
+    fsrc, _ = font_src(font_path)
+    cfg = {
+        "size": int(size),
+        "sizeMin": int(size_min),
+        "sizeMax": int(size_max),
+        "speedFactor": float(speed),
+        "plannedS": planned,
+        "words": words,
+        "eyeline": bool(eyeline),
+        "lensPct": float(lens if eyeline else 9.0),
+        "mirror": bool(mirror),
+    }
+    replacements = {
+        "__TITLE__": html.escape(title),
+        "__FONT_SRC__": fsrc,
+        "__SIZE__": str(int(size)),
+        "__FS_MIN__": str(int(size_min)),
+        "__FS_MAX__": str(int(size_max)),
+        "__COLW__": colw,
+        "__BODY_CLASS__": "mirror" if mirror else "",
+        "__EYELINE_CSS__": extra_css,
+        "__GUIDES__": guides,
+        "__SECTIONS__": "".join(parts),
+        "__CFG__": json.dumps(cfg, ensure_ascii=False),
+    }
+    doc = TEMPLATE.read_text(encoding="utf-8")
+    for token, value in replacements.items():
+        doc = doc.replace(token, value)
+    return doc
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("script")
     ap.add_argument("out")
-    ap.add_argument("--speed", type=int, default=42, help="пикселей в секунду")
-    ap.add_argument("--size", type=int, default=66, help="кегль текста для чтения")
+    ap.add_argument("--speed", type=float, default=1.0,
+                    help="множитель темпа: 1.0 = ровно плановая длительность сценария; "
+                         "значения > 5 считаются старым px/s и игнорируются")
+    ap.add_argument("--size", type=int, default=66,
+                    help="кегль текста по умолчанию (в странице его можно менять)")
+    ap.add_argument("--size-min", type=int, default=36, help="нижняя граница кегля")
+    ap.add_argument("--size-max", type=int, default=120, help="верхняя граница кегля")
     ap.add_argument("--mirror", action="store_true", help="для суфлёрского стекла")
     ap.add_argument("--title", default=None)
     ap.add_argument("--eyeline", action="store_true",
                     help="режим «взгляд в объектив»: строка чтения стоит на высоте камеры")
     ap.add_argument("--lens-percent", type=float, default=9.0,
                     help="высота объектива в кадре, %% от высоты экрана (вебка сверху ≈ 8-11)")
-    ap.add_argument("--lens-x-percent", type=float, default=50.0,
-                    help="горизонталь объектива, %% от ширины экрана")
     ap.add_argument("--column-vw", type=float, default=46.0,
-                    help="ширина колонки текста, vw (узкая колонка = короче строки = меньше беготни глаз)")
+                    help="ширина колонки текста при базовом кегле, vw "
+                         "(колонка тянется вместе с кеглем; узкая = короче строка)")
+    ap.add_argument("--font", default=None,
+                    help="путь к .ttf для вшивания в страницу (по умолчанию — Inter 800 из брендбука)")
     args = ap.parse_args()
 
     src = Path(args.script)
@@ -185,24 +225,38 @@ def main() -> int:
     blocks = split_blocks(read_any(src))
     if not blocks:
         raise SystemExit("не нашёл ни одного блока вида '#NЗаголовок~50 сек'")
+    if not 0.35 <= args.speed <= 3.0:
+        print(f"  ! --speed {args.speed} вне диапазона 0.35..3.0 "
+              f"(старое значение в px/s больше не используется) — беру 1.0")
+        args.speed = 1.0
+    if not 20 <= args.size_min < args.size_max <= 200:
+        raise SystemExit("кегли заданы странно: нужно 20 <= --size-min < --size-max <= 200")
+
     title = args.title or src.stem
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(build_html(blocks, title, args.speed, args.size, args.mirror,
+    out.write_text(build_html(blocks, title, args.size, args.mirror,
                               args.lens_percent if args.eyeline else None,
-                              args.lens_x_percent, args.column_vw), encoding="utf-8")
+                              args.column_vw, args.speed,
+                              args.size_min, args.size_max, args.font),
+                   encoding="utf-8")
+
     planned = sum(b["planned_s"] for b in blocks)
     words = sum(len(" ".join(b["text"]).split()) for b in blocks)
-    print(f"Teleprompter: {out}")
+    _, font_note = font_src(args.font)
+    print(f"Teleprompter: {out} ({out.stat().st_size // 1024} КБ)")
     print(f"  блоков {len(blocks)} | плановая длительность {planned} с "
           f"({planned // 60}:{planned % 60:02d}) | слов {words} "
-          f"| темп {words / max(1, planned) * 60:.0f} слов/мин")
-    print(f"  скорость {args.speed} px/s, кегль {args.size}px"
-          + (", зеркало" if args.mirror else ""))
+          f"| темп плана {words / max(1, planned) * 60:.0f} слов/мин")
+    print(f"  кегль {args.size} px по умолчанию, выбор {args.size_min}..{args.size_max} px "
+          f"в окне (A− / ползунок / A+ / клавиши + −)")
+    print(f"  темп ×{args.speed:.2f} от плана | шрифт: {font_note}")
     if args.eyeline:
         print(f"  режим «взгляд в объектив»: линия чтения на {args.lens_percent:.1f} % высоты "
-              f"(высота объектива), колонка {args.column_vw:.0f} vw, "
-              f"метка объектива по центру {args.lens_x_percent:.0f} %")
+              f"(высота объектива), колонка {args.column_vw:.0f} vw при базовом кегле "
+              f"(тянется вместе с кеглем)")
+        print("  метка объектива — в левом поле на линии чтения; при крупном кегле "
+              "колонка расширяется и подпись исчезает")
         print("  правило: объектив должен стоять на этой линии, иначе глаза уходят вниз")
     else:
         print("  обычный режим (текст идёт от 80 % высоты). Для съёмки лица "
