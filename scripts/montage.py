@@ -268,8 +268,10 @@ class Pipeline:
 
     def stage_comp(self) -> None:
         if self.script:
-            out = run([sys.executable, str(SCRIPTS / "generate_comp_plan.py"), self.label],
-                      capture=True)
+            cmd = [sys.executable, str(SCRIPTS / "generate_comp_plan.py"), self.label]
+            if getattr(self.args, "assembled", False):
+                cmd.append("--assembled")
+            out = run(cmd, capture=True)
         else:
             out = run([sys.executable, str(SCRIPTS / "generate_comp.py"), self.label],
                       capture=True)

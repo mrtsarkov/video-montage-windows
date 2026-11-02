@@ -445,6 +445,110 @@ GLASS_W = 1240        # centred plate inside the liquid-glass cover
 SHEET_W = 880         # push panel width
 AIR = 0.7             # seconds of empty frame between two cards (§9.5)
 
+# ------------------------------------------------- scene-aware placement (assembled)
+# In `--assembled` the graphics layer is an overlay on the OBS program composite: the
+# camera is not pushed aside any more (there is no separate camera plate), so every card
+# has to stay inside the safe zone of the scene that is on screen at that moment. The
+# scene map comes from edit/video_plan.json (`video_review_plan.py`); without the map the
+# classic side columns are used. `width` is the CSS card width in px; the copy fitter
+# gets width - 2 * PAD because .win carries 30 px side padding on both sides.
+SCENE_LAYOUTS: dict[str, dict[str, dict]] = {
+    "CHARTS": {
+        "left":   {"css": "sc_charts_left",   "width": 800,
+                   "note": "широкая левая колонка: правая ось цен и верхняя панель TV свободны"},
+        "right":  {"css": "sc_charts_right",  "width": 700,
+                   "note": "правая колонка с отступом от оси цен"},
+        "bottom": {"css": "sc_charts_bottom", "width": 1100,
+                   "note": "нижняя полоса: график остаётся читаемым"},
+    },
+    "CIRCLE": {
+        "tl": {"css": "sc_circle_tl", "width": 560, "note": "верхний левый угол"},
+        "tr": {"css": "sc_circle_tr", "width": 560, "note": "верхний правый угол"},
+        "bl": {"css": "sc_circle_bl", "width": 600, "note": "нижний левый угол"},
+    },
+}
+# kinds that read better as a wide panel; the rest gets a compact strip
+WIDE_KINDS = {"quotes", "table", "timeline", "diagram", "steps", "checklist", "scenario",
+              "funnel", "chart", "premium", "compare"}
+COMPACT_KINDS = {"stat", "chips", "quote", "counter", "miners"}
+
+SCENE_CSS = """
+/* ---- scene-aware inserts (assembled: OBS program composite) ----------------- */
+/* CHARTS: no presenter in frame, full-screen TradingView chart: keep the top toolbar,
+   the left toolbar and the right price axis clear and use the free chart area. */
+.win.sc_charts_left { left:3%; right:auto; top:9%; width:800px; transform-origin:left center; }
+.win.sc_charts_right { right:6.5%; left:auto; top:9%; width:700px; transform-origin:right center; }
+.win.sc_charts_bottom { left:8%; right:auto; top:auto; bottom:6%; width:1100px;
+  transform-origin:center bottom; }
+/* CIRCLE: the presenter sits in a circle over the chart: corners away from it only. */
+.win.sc_circle_tl { left:3.5%; right:auto; top:7%; width:560px; transform-origin:left top; }
+.win.sc_circle_tr { right:3.5%; left:auto; top:7%; width:560px; transform-origin:right top; }
+.win.sc_circle_bl { left:3.5%; right:auto; top:auto; bottom:8%; width:600px;
+  transform-origin:left bottom; }
+/* assembled mode: the subscription moment is a card, not the full-height push sheet */
+.oc .op-brand { font:900 52px/1.06 'Inter'; letter-spacing:-.03em; color:__INK__; margin-top:14px; }
+.oc .op-brand em { font-style:normal; color:__ACCENT__; }
+.oc .op-handle { font:800 32px/1 'Inter'; color:__ACCENT__; margin-top:10px; }
+.oc .op-note { font:500 25px/1.4 'Inter'; color:__MUTED__; margin-top:12px; }
+.oc .op-chips { display:flex; gap:10px; margin-top:18px; }
+"""
+
+
+def load_scene_map(edit: Path) -> tuple[dict[int, str], str, str]:
+    """block number -> OBS scene from edit/video_plan.json (assembled mode only).
+
+    Returns (map, source, circle_corner). An empty map means «no plan — classic layout».
+    """
+    path = edit / "video_plan.json"
+    if not path.is_file():
+        return {}, "", "br"
+    try:
+        vp = json.loads(path.read_text(encoding="utf-8-sig"))
+    except (OSError, json.JSONDecodeError) as exc:  # pragma: no cover - defensive
+        print(f"  ! video_plan.json не прочитан ({exc}); раскладки по сценам выключены")
+        return {}, "", "br"
+    out: dict[int, str] = {}
+    for b in vp.get("blocks") or []:
+        try:
+            out[int(b.get("n"))] = str(b.get("scene") or "FACE").upper()
+        except (TypeError, ValueError):
+            continue
+    corner = "br"
+    data_path = edit / "data.json"
+    if data_path.is_file():
+        try:
+            data = json.loads(data_path.read_text(encoding="utf-8-sig"))
+            corner = str((data.get("passport") or {}).get("circle_corner") or "br").lower()
+        except (OSError, json.JSONDecodeError):  # pragma: no cover - defensive
+            pass
+    return out, str(path), corner
+
+
+def circle_corners(corner: str) -> list[str]:
+    """CIRCLE slots ordered by distance from the presenter circle (default bottom-right)."""
+    corner = corner if corner in {"tl", "tr", "bl", "br"} else "br"
+    order = ["tl", "tr", "bl", "br"]
+    return [c for c in order if c != corner] or ["tl"]
+
+
+def scene_layout(scene: str, kind: str, index: int, circle_corner: str = "br") -> dict | None:
+    """Which placement a card gets in this scene (None = the classic side column).
+
+    FACE keeps the outer columns (the same rule as the old format); CIRCLE and CHARTS
+    switch to the safe zones fixed in video_plan.json.
+    """
+    scene = (scene or "FACE").upper()
+    if scene == "CHARTS":
+        if kind in COMPACT_KINDS:
+            return SCENE_LAYOUTS["CHARTS"]["bottom"]
+        if kind in WIDE_KINDS:
+            return SCENE_LAYOUTS["CHARTS"]["left" if index % 2 == 0 else "right"]
+        return SCENE_LAYOUTS["CHARTS"]["left"]
+    if scene == "CIRCLE":
+        corners = circle_corners(circle_corner)
+        return SCENE_LAYOUTS["CIRCLE"][corners[index % len(corners)]]
+    return None
+
 
 class Comp:
     def __init__(self, brand: dict, ce: CopyEngine):
@@ -649,7 +753,7 @@ def css(brand: dict) -> str:
         f"src:url('fonts/Inter-{w}.ttf'); font-display:block; }}"
         for w in FONT_FILES
     )
-    sheet = CSS.replace("__FACES__", faces)
+    sheet = (CSS + "\n" + SCENE_CSS).replace("__FACES__", faces)
     for key, val in (("__WHITE__", brand["white"]), ("__SURFACE__", brand["surface"]),
                      ("__ACCENT__", brand["accent"]), ("__INK__", brand["ink"]),
                      ("__MUTED__", brand["muted"]), ("__R__", str(brand["radius"])),
@@ -744,7 +848,7 @@ def draw_divider(c: Comp, spec: dict, eid: str, at: float, dur: float) -> None:
 
 
 def draw_quotes(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) -> float:
-    w = SIDE_W - 2 * PAD
+    w = spec.get("w") or SIDE_W - 2 * PAD
     inner = [f'    <div class="h">{esc(spec["kicker"])}</div>',
              f'    <div class="t">{esc(c.ce.fit(spec["title"], 800, 38, w, 2, eid + ".t"))}</div>']
     rows = spec["rows"][:4]
@@ -762,7 +866,7 @@ def draw_quotes(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str)
 
 
 def draw_chart(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) -> float:
-    w = WIDE_W - 2 * PAD
+    w = spec.get("w") or WIDE_W - 2 * PAD
     rows = spec["rows"][:4]
     peak = max((num(v) for _, v in rows), default=1.0) or 1.0
     col_w = (w - 14 * (len(rows) - 1)) / max(1, len(rows))
@@ -795,7 +899,7 @@ def draw_chart(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) 
 
 
 def draw_table(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) -> float:
-    w = SIDE_W - 2 * PAD
+    w = spec.get("w") or SIDE_W - 2 * PAD
     inner = [f'    <div class="h">{esc(spec["kicker"])}</div>',
              f'    <div class="t">{esc(c.ce.fit(spec["title"], 800, 38, w, 3, eid + ".t"))}</div>']
     rows = spec["rows"][:5]
@@ -814,7 +918,7 @@ def draw_table(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) 
 
 
 def draw_timeline(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) -> float:
-    w = SIDE_W - 2 * PAD
+    w = spec.get("w") or SIDE_W - 2 * PAD
     inner = [f'    <div class="h">{esc(spec["kicker"])}</div>',
              f'    <div class="t">{esc(c.ce.fit(spec["title"], 800, 38, w, 2, eid + ".t"))}</div>']
     items = spec["items"][:3]
@@ -843,7 +947,7 @@ def draw_timeline(c: Comp, spec: dict, eid: str, at: float, dur: float, side: st
 
 
 def draw_diagram(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) -> float:
-    w = WIDE_W - 2 * PAD
+    w = spec.get("w") or WIDE_W - 2 * PAD
     inner = [f'    <div class="h">{esc(spec["kicker"])}</div>',
              f'    <div class="t">{esc(c.ce.fit(spec["title"], 800, 38, w, 2, eid + ".t"))}</div>']
     items = spec["items"][:4]
@@ -866,7 +970,7 @@ def draw_diagram(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str
 
 def draw_checklist(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str,
                    times: list[float] | None = None) -> float:
-    w = WIDE_W - 2 * PAD
+    w = spec.get("w") or WIDE_W - 2 * PAD
     items = [c.ce.fit(t, 500, 28, w - 44, 2, f"{eid}.i{i}") for i, t in enumerate(spec["items"][:5])]
     times = times or [at + 0.85 + i * 0.55 for i in range(len(items))]
     inner = [f'    <div class="h">{esc(spec["kicker"])}</div>',
@@ -890,7 +994,7 @@ def draw_checklist(c: Comp, spec: dict, eid: str, at: float, dur: float, side: s
 
 
 def draw_stat(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) -> float:
-    w = SIDE_W - 2 * PAD
+    w = spec.get("w") or SIDE_W - 2 * PAD
     inner = [f'    <div class="h">{esc(spec["kicker"])}</div>',
              f'    <div class="stat"><span id="{eid}v">0</span><small>{esc(spec.get("unit", "%"))}</small></div>',
              f'    <div class="t">{esc(c.ce.fit(spec["title"], 800, 38, w, 2, eid + ".t"))}</div>']
@@ -908,7 +1012,7 @@ def draw_stat(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) -
 
 def draw_partial(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) -> float:
     """плюс/минус: значение плюс шкала дней под нулевой линией."""
-    w = WIDE_W - 2 * PAD
+    w = spec.get("w") or WIDE_W - 2 * PAD
     days = int(spec.get("days", 20))
     inner = [f'    <div class="h">{esc(spec["kicker"])}</div>',
              f'    <div class="t">{esc(c.ce.fit(spec["title"], 800, 38, w, 2, eid + ".t"))}</div>',
@@ -926,7 +1030,7 @@ def draw_partial(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str
 
 
 def draw_funnel(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) -> float:
-    w = SIDE_W - 2 * PAD
+    w = spec.get("w") or SIDE_W - 2 * PAD
     inner = [f'    <div class="h">{esc(spec["kicker"])}</div>',
              f'    <div class="t">{esc(c.ce.fit(spec["title"], 800, 38, w, 2, eid + ".t"))}</div>']
     steps = spec["steps"][:3]
@@ -957,7 +1061,7 @@ def draw_funnel(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str)
 
 
 def draw_scenario(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) -> float:
-    w = WIDE_W - 2 * PAD
+    w = spec.get("w") or WIDE_W - 2 * PAD
     tone = spec["tone"]
     badge = 'bear' if tone == "BEAR" else ''
     inner = [f'    <div class="sc-head"><span class="badge {badge}">{esc(tone)}</span>'
@@ -985,7 +1089,7 @@ def draw_scenario(c: Comp, spec: dict, eid: str, at: float, dur: float, side: st
 
 
 def draw_chips(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) -> float:
-    w = SIDE_W - 2 * PAD
+    w = spec.get("w") or SIDE_W - 2 * PAD
     inner = [f'    <div class="h">{esc(spec["kicker"])}</div>',
              f'    <div class="t">{esc(c.ce.fit(spec["title"], 800, 38, w, 2, eid + ".t"))}</div>']
     items = [c.ce.fit(x, 600, 25, w - 40, 1, f"{eid}.c{i}") for i, x in enumerate(spec["items"][:7])]
@@ -1001,7 +1105,7 @@ def draw_chips(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) 
 
 
 def draw_quote(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) -> float:
-    w = WIDE_W - 2 * PAD
+    w = spec.get("w") or WIDE_W - 2 * PAD
     text = c.ce.fit(spec["text"], 500, 33, w - 40, 6, eid + ".q")
     head, tail = text, ""
     for sep in (" — ", " – ", " это "):
@@ -1024,7 +1128,7 @@ def draw_quote(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) 
 
 def draw_compare(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str) -> float:
     """было / стало - two cells, the right one highlighted."""
-    w = WIDE_W - 2 * PAD
+    w = spec.get("w") or WIDE_W - 2 * PAD
     cells = spec["cells"][:2]
     inner = [f'    <div class="h">{esc(spec["kicker"])}</div>',
              f'    <div class="t">{esc(c.ce.fit(spec["title"], 800, 38, w, 2, eid + ".t"))}</div>',
@@ -1043,8 +1147,34 @@ def draw_compare(c: Comp, spec: dict, eid: str, at: float, dur: float, side: str
     return 1.1
 
 
+def draw_outro_card(c: Comp, spec: dict, eid: str, at: float, dur: float) -> float:
+    """assembled mode: the composite cannot be pushed aside — subscription becomes a card.
+
+    The old format moved the camera aside and put the panel into the freed half of the
+    frame; with an OBS program composite there is nothing to move, so the subscription
+    moment is a normal overlay card inside the safe zone of the current scene.
+    """
+    w = spec.get("w") or WIDE_W - 2 * PAD
+    note = c.ce.fit(spec["note"], 500, 27, w, 4, eid + ".note")
+    inner = (
+        f'    <div class="h">{esc(spec["kicker"])}</div>\n'
+        f'    <div class="op-brand">{esc(spec["brand"])} <em>{esc(spec["accent"])}</em></div>\n'
+        f'    <div class="op-handle">{esc(spec["handle"])}</div>\n'
+        f'    <div class="op-note">{esc(note)}</div>\n'
+        f'    <div class="op-chips"><span class="chip on">Подписка</span>'
+        f'<span class="chip">BingX в описании</span></div>\n')
+    side = spec.get("side") or "r"
+    c.clip(eid, f"panel win wide oc {side}", at, dur, inner)
+    c.open_card(eid, at, dur)
+    c.plan_row(at, spec.get("spoken", ""), "outro",
+               "панель подписки в безопасной зоне (assembled)", "impact")
+    return 0.6
+
+
 def draw_outro(c: Comp, spec: dict, eid: str, at: float, dur: float) -> float:
     """The subscription plate: the speaker is pushed aside, the panel takes the space."""
+    if spec.get("assembled"):
+        return draw_outro_card(c, spec, eid, at, dur)
     inner_w = SHEET_W - 112
     note = c.ce.fit(spec["note"], 500, 27, inner_w, 4, eid + ".note")
     inner = (
@@ -1542,7 +1672,7 @@ def checklist_times(b: dict, anch: "Anchors", at: float, dur: float,
 
 # ------------------------------------------------------------------- assemble
 def build(label: str, edit: Path, json_out: Path | None = None,
-          copy_path: Path | None = None) -> int:
+          copy_path: Path | None = None, assembled: bool = False) -> int:
     plan = json.loads((edit / "script_plan.json").read_text(encoding="utf-8-sig"))
     data = json.loads((edit / "data.json").read_text(encoding="utf-8-sig"))
     raw = json.loads(BRAND_PATH.read_text(encoding="utf-8-sig"))
@@ -1579,6 +1709,15 @@ def build(label: str, edit: Path, json_out: Path | None = None,
             else b["_src0"] + 120.0
         b["_divider_at"] = float(b.get("boundary_s") if b.get("boundary_s") is not None
                                  else b["_start"])
+
+    # ---- scene map (assembled only): which OBS scene is on screen per block
+    scene_map: dict[int, str] = {}
+    scene_source = ""
+    circle_corner = "br"
+    if assembled:
+        scene_map, scene_source, circle_corner = load_scene_map(edit)
+        print(f"  assembled: сцены {scene_source or 'нет video_plan.json — классические колонки'}"
+              f" ({len(scene_map)} блоков), circle={circle_corner}")
 
     author = data["passport"].get("author") or {"name": "Дмитрий Царьков",
                                                 "role": "управляющий активами"}
@@ -1620,6 +1759,8 @@ def build(label: str, edit: Path, json_out: Path | None = None,
                              "dur": dur, "side": "center", "anchored": True, "layout": "glass"})
 
     # ---- inserts, laid out in speech order with air between them (§9.5)
+    charts_i = 0      # wide CHARTS cards alternate left/right across the whole episode
+    circle_i = 0      # CIRCLE cards rotate through the corners away from the circle
     for i, b in enumerate(blocks):
         counters: dict[str, int] = {}
         prepared = []
@@ -1690,11 +1831,29 @@ def build(label: str, edit: Path, json_out: Path | None = None,
             if ev["force_last"]:
                 ev["dur"] = round(max(ev["dur"], min(30.0, total - 0.2 - ev["at"])), 3)
             eid = f"e{b['n']}_{j+1}"
+            # scene-aware placement: a card has to respect the OBS scene on screen
+            scene = scene_map.get(int(b["n"])) if scene_map else None
+            layout = None
+            if scene and scene.upper() == "CHARTS":
+                layout = scene_layout(scene, ev["kind"], charts_i, circle_corner)
+                if ev["kind"] not in COMPACT_KINDS:
+                    charts_i += 1
+            elif scene and scene.upper() == "CIRCLE":
+                layout = scene_layout(scene, ev["kind"], circle_i, circle_corner)
+                circle_i += 1
+            if assembled:
+                ev["content"]["assembled"] = True
+            if layout:
+                ev["content"]["w"] = layout["width"] - 2 * PAD
+                ev["content"]["scene"] = scene
+                ev["content"]["layout_id"] = layout["css"]
+                ev["side"] = f'{ev["side"]} {layout["css"]}'
             draw_card(c, ev, eid, ev["at"], ev["dur"], b, anch)
             inserts_meta.append({"block": b["n"], "kind": ev["kind"], "id": eid,
                                  "at": ev["at"], "dur": ev["dur"], "side": ev["side"],
+                                 "scene": scene, "layout": (layout or {}).get("css",
+                                                                            "classic-side"),
                                  "anchored": ev["found"] is not None,
-                                 "layout": "push" if ev["kind"] == "outro" else "side",
                                  "override": bool(ev["override"])})
             if j + 1 < len(keep):
                 gap = keep[j + 1]["at"] - (ev["at"] + ev["dur"])
@@ -1771,6 +1930,9 @@ tl.seek(0);
     meta = {"label": label, "duration_s": round(total, 3), "layer_s": total_layer,
             "endcard_at": end_at, "blocks": len(blocks), "elements": len(c.html),
             "inserts": inserts_meta, "notes": c.notes, "author": author,
+            "assembled": assembled, "scene_source": scene_source or None,
+            "scene_map": {str(k): v for k, v in sorted(scene_map.items())},
+            "scene_layouts": SCENE_LAYOUTS if assembled else {},
             "copy_source": str(copy_path) if copy_path else None}
     (json_out or (edit / "comp_plan.json")).write_text(
         json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -1809,12 +1971,15 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--edit", default=None)
     ap.add_argument("--json", default=None)
     ap.add_argument("--copy", default=None, help="curated copy file (inserts.json)")
+    ap.add_argument("--assembled", action="store_true",
+                    help="вход — OBS-композит: раскладки вставок по сценам из video_plan.json, "
+                         "без push-камеры (подписка — карточка в безопасной зоне)")
     a = ap.parse_args(argv)
     ed = Path(a.edit) if a.edit else ROOT / "runs" / a.label / "edit"
     cp = Path(a.copy) if a.copy else None
     if cp and not cp.is_absolute():
         cp = ROOT / cp
-    return build(a.label, ed, Path(a.json) if a.json else None, cp)
+    return build(a.label, ed, Path(a.json) if a.json else None, cp, assembled=a.assembled)
 
 
 if __name__ == "__main__":
