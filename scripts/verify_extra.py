@@ -487,11 +487,21 @@ def main() -> int:
     ap.add_argument("--data", default=None, help="data.json (face box and passport)")
     ap.add_argument("--json", default=None)
     ap.add_argument("--sheet-dir", default=None)
+    ap.add_argument("--assembled", action="store_true",
+                    help="assembled: OBS-композит, проверка «графика не на лице» неприменима")
     args = ap.parse_args()
 
     final = Path(args.final).resolve()
     edit = Path(args.edit).resolve()
     sheet_dir = Path(args.sheet_dir).resolve() if args.sheet_dir else edit / "frames"
+    if args.assembled:
+        face_safe_check = {
+            "check": "face_safe", "status": "SKIP",
+            "measured": "assembled: сцены FACE/CIRCLE/CHARTS уже сведены в OBS-композите",
+            "target": "n/a в режиме assembled (правила зон — edit/video_plan.json)",
+        }
+    else:
+        face_safe_check = check_face_safe(edit, Path(args.data).resolve() if args.data else None)
     checks = [
         check_frame_sheet(final, edit, sheet_dir),
         check_audio_sync(final, edit),
@@ -501,7 +511,7 @@ def main() -> int:
         check_determinism(edit),
         check_copy_quality(edit),
         check_retakes(edit),
-        check_face_safe(edit, Path(args.data).resolve() if args.data else None),
+        face_safe_check,
     ]
     print("verify_extra.py - additional checks (§12)")
     print(f"file : {final}")

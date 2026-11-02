@@ -143,6 +143,13 @@ class Pipeline:
         self.out.mkdir(parents=True, exist_ok=True)
         if not self.take.is_file():
             raise Fail(f"take not found: {self.take}")
+        self.plan = None
+        if getattr(args, "plan", None):
+            self.plan = Path(args.plan)
+            if not self.plan.is_absolute():
+                self.plan = (ROOT / self.plan).resolve()
+            if not self.plan.is_file():
+                raise Fail(f"plan not found: {self.plan}")
         base = self.take.stem
         self.words = self.edit / "transcripts" / f"{base}-words.json"
         self.edl = self.edit / "edl.json"
@@ -231,6 +238,33 @@ class Pipeline:
                    str(self.edit)], capture=True)
         for line in out.strip().splitlines():
             log(line)
+
+    def stage_video_plan(self) -> None:
+        """План выпуска (дашборд) -> сцены, безопасные зоны и отчёт «план vs факт».
+
+        Работает только в plan-режиме и только если передан --plan. Пишет в edit/:
+        video_plan.json, plan_vs_fact.json, plan_report.md.
+        """
+        if not self.plan:
+            log("no --plan given, skipped")
+            return
+        cmd = [sys.executable, str(SCRIPTS / "video_review_plan.py"),
+               "--plan", str(self.plan), "--edit", str(self.edit)]
+        if self.script:
+            cmd += ["--script", str(self.script)]
+        if self.words.exists():
+            cmd += ["--words", str(self.words)]
+        out = run(cmd, capture=True)
+        for line in out.strip().splitlines():
+            log(line)
+        # фиксируем режим в паспорте: графика по сценам, проверка лица в verify_extra отключается
+        data_path = self.edit / "data.json"
+        if data_path.exists():
+            data = json.loads(data_path.read_text(encoding="utf-8-sig"))
+            data.setdefault("passport", {})["assembled"] = True
+            data["passport"]["graphics_mode"] = "scene_safe_zones"
+            data_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+            log("passport: assembled=true, graphics_mode=scene_safe_zones")
 
     def stage_comp(self) -> None:
         if self.script:
@@ -355,6 +389,8 @@ class Pipeline:
                "--edit", str(self.edit), "--source", str(self.take),
                "--data", str(self.edit / "data.json"),
                "--json", str(self.edit / "verify_extra.json")]
+        if getattr(self.args, "assembled", False):
+            cmd.append("--assembled")
         out = run(cmd, capture=True)
         for line in out.strip().splitlines()[-3:]:
             log(line)
@@ -366,6 +402,9 @@ class Pipeline:
 
     def stage_report(self) -> None:
         text = build_report(self)
+        plan_report = self.edit / "plan_report.md"
+        if plan_report.exists():
+            text += "\n\n" + plan_report.read_text(encoding="utf-8")
         self.report.write_text(text, encoding="utf-8")
         log(f"report: {self.report}")
 
@@ -569,6 +608,8 @@ STAGES = [
     ("env", "stage_env", None, None),
     ("edl", "stage_edl", ["edl.json", "check_edl.json"], ["transcripts"]),
     ("script_plan", "stage_script_plan", ["script_plan.json"], ["edl.json", "transcripts"]),
+    ("video_plan", "stage_video_plan", ["video_plan.json", "plan_vs_fact.json", "plan_report.md"],
+     ["script_plan.json"]),
     ("voice", "stage_voice", ["voice.wav"], ["edl.json"]),
     ("comp", "stage_comp", ["comp/index.html", "comp_plan.json", "stage.json",
                             "timeline.json", "graphics_plan.md"],
@@ -595,7 +636,7 @@ STAGES = [
 # stages that only exist for the §8 "word behind the head" recipe
 BACK_STAGES = {"plate", "back_comp", "pick_window", "render_back", "mask"}
 # stages that only exist when the graphics come from a shooting script
-PLAN_STAGES = {"script_plan"}
+PLAN_STAGES = {"script_plan", "video_plan"}
 
 
 def main() -> int:
@@ -618,7 +659,16 @@ def main() -> int:
                     help="acceptance floor; ~30 Mbit/s is unreachable on 1080p screen takes")
     ap.add_argument("--no-matrix-fix", action="store_true")
     ap.add_argument("--allow-fail", action="store_true", help="do not stop when acceptance fails")
+    ap.add_argument("--plan", default=None,
+                    help="план выпуска (plan.json из дашборда): сцены, безопасные зоны, отчёт «план vs факт»")
+    ap.add_argument("--assembled", action="store_true",
+                    help="OBS-композит: камеру не перекомпоновываем, проверка лица не применяется")
     args = ap.parse_args()
+
+    if getattr(args, "assembled", False) and not args.script:
+        raise Fail("--assembled требует --script: границы блоков и графика берутся из сценария")
+    if getattr(args, "assembled", False):
+        log("assembled: OBS-композит, камеру не перекомпоновываем; проверка лица отключена")
 
     take = Path(args.take)
     if not take.is_absolute():
@@ -641,6 +691,8 @@ def main() -> int:
     stages = [s for s in STAGES
               if not (plan_mode and s[0] in BACK_STAGES)
               and not (not plan_mode and s[0] in PLAN_STAGES)]
+    if not getattr(args, "plan", None):
+        stages = [s for s in stages if s[0] != "video_plan"]
     names = [s[0] for s in stages]
     start = names.index(args.from_stage) if args.from_stage else 0
     print(f"\n=== montage {args.label} ===")
